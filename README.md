@@ -44,7 +44,12 @@ Now you can compile your test.ts into javascript by calling tsc and indicating t
 * `"include": ["**/*.ts"]` : Indicates to compile all files it finds ending in .ts in this and any sub folders relative to the rootDir setting within this same tsconfig.json.
 
 
-#### compile files
+#### Compile files
 `tsc -p ./src`
 
 For documentation on all the options that you can have in a tsconfig.json file, visit https://www.typescriptlang.org/tsconfig
+
+
+#### TSC Watch
+
+`tsc -p ./src -w`
