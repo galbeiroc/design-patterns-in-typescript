@@ -84,3 +84,15 @@ quuz = [1, "abc"];
 corge = { 123: "abc", 456: "def" };
 grault = new Set([1, 2, 3]);
 ```
+
+#### String
+Some more string experiments you can try are:
+
+```ts
+let foo: string
+foo = 'ABC'
+foo = '123'
+foo = "It wasn't me"
+foo = "it wasn\'t me";
+foo = `abc ${str} def`  //abc it wasn't me def
+```
