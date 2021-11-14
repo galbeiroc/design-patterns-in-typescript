@@ -1,0 +1,13 @@
+{
+  "name": "design-patterns-in-typescript",
+  "version": "1.0.0",
+  "description": "Design Patterns in TypeScript",
+  "main": "index.js",
+  "repository": "https://github.com/galbeiroc/design-patterns-in-typescript.git",
+  "author": "galbeiroc <alcresgu_1989@hotmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@types/node": "^16.11.7"
+  }
+}
