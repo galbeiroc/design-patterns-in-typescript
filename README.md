@@ -105,3 +105,15 @@ let bar: boolean
 bar = true
 bar = false
 ```
+
+### Number
+A number can be written in many bases or with floating point precision.
+
+```ts
+let num: number
+num = 123 //decimal
+num = 123.456 //float
+num = 0xffff //hex
+num = 0b10101 //binary - "0b"+num.toString(2)
+num = 0o671 //octal - "0o"+num.toString(8)
+```
