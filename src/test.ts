@@ -32,14 +32,22 @@ let bln: boolean;
 bln = true;
 bln = false;
 
-
-
 /**
  * Number
  */
-let num: number
-num = 123 //decimal
-num = 123.456 //float
-num = 0xffff //hex
-num = 0b10101 //binary - "0b"+num.toString(2)
-num = 0o671 //octal - "0o"+num.toString(8)
+let num: number;
+num = 123; //decimal
+num = 123.456; //float
+num = 0xffff; //hex
+num = 0b10101; //binary - "0b"+num.toString(2)
+num = 0o671; //octal - "0o"+num.toString(8)
+
+/**
+ * Array
+ */
+let a: string[];
+a = ["a", "b", "c", "d"];
+let b: number[] = [1, 2, 3, 4, 5];
+let c: boolean[];
+c = [true, false, false];
+let d: unknown[] = [1, "a", true, ["even", "another", "inner", "array"]];

@@ -106,7 +106,7 @@ bar = true
 bar = false
 ```
 
-### Number
+#### Number
 A number can be written in many bases or with floating point precision.
 
 ```ts
@@ -116,4 +116,20 @@ num = 123.456 //float
 num = 0xffff //hex
 num = 0b10101 //binary - "0b"+num.toString(2)
 num = 0o671 //octal - "0o"+num.toString(8)
+```
+
+#### Array
+An array is a JavaScript object first that can contain a series of any types,
+but in TypeScript you can set the types explicitly or even as unknown.
+
+```ts
+let a: string[];
+a = ["a", "b", "c", "d"];
+let b: number[];
+b = [1, 2, 3, 4, 5];
+let c: boolean[];
+c = [true, false, false];
+let d: unknown[] = [1, "a", true, ["even", "another", "inner", "array"]];
+
+console.log(d.length);  //4
 ```
