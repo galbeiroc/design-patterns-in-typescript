@@ -22,5 +22,12 @@ let str: string;
 str = "ABC";
 str = "123";
 str = "it wasm't me";
-str = "it wasn\'t me";
+str = "it wasn't me";
 str = `abc ${str} def`; //abc it wasn't me def
+
+/**
+ * Boolean
+ */
+let bln: boolean;
+bln = true;
+bln = false;

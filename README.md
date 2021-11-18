@@ -96,3 +96,12 @@ foo = "It wasn't me"
 foo = "it wasn\'t me";
 foo = `abc ${str} def`  //abc it wasn't me def
 ```
+
+#### Boolean
+A boolean can either be `true` or `false`.
+
+```ts
+let bar: boolean
+bar = true
+bar = false
+```
