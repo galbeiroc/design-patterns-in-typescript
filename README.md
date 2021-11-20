@@ -86,39 +86,43 @@ grault = new Set([1, 2, 3]);
 ```
 
 #### String
+
 Some more string experiments you can try are:
 
 ```ts
-let foo: string
-foo = 'ABC'
-foo = '123'
-foo = "It wasn't me"
-foo = "it wasn\'t me";
-foo = `abc ${str} def`  //abc it wasn't me def
+let foo: string;
+foo = "ABC";
+foo = "123";
+foo = "It wasn't me";
+foo = "it wasn't me";
+foo = `abc ${str} def`; //abc it wasn't me def
 ```
 
 #### Boolean
+
 A boolean can either be `true` or `false`.
 
 ```ts
-let bar: boolean
-bar = true
-bar = false
+let bar: boolean;
+bar = true;
+bar = false;
 ```
 
 #### Number
+
 A number can be written in many bases or with floating point precision.
 
 ```ts
-let num: number
-num = 123 //decimal
-num = 123.456 //float
-num = 0xffff //hex
-num = 0b10101 //binary - "0b"+num.toString(2)
-num = 0o671 //octal - "0o"+num.toString(8)
+let num: number;
+num = 123; //decimal
+num = 123.456; //float
+num = 0xffff; //hex
+num = 0b10101; //binary - "0b"+num.toString(2)
+num = 0o671; //octal - "0o"+num.toString(8)
 ```
 
 #### Array
+
 An array is a JavaScript object first that can contain a series of any types,
 but in TypeScript you can set the types explicitly or even as unknown.
 
@@ -131,5 +135,30 @@ let c: boolean[];
 c = [true, false, false];
 let d: unknown[] = [1, "a", true, ["even", "another", "inner", "array"]];
 
-console.log(d.length);  //4
+console.log(d.length); //4
+```
+
+#### Dictionary
+
+A Dictionary is used as a key/value construct, where you can retrieve a value from the dictionary by using a key.
+
+Since Dictionaries are really just objects. You can also retrieve a dictionary's value using object
+notation if the keys are strings
+
+```ts
+let a: { [key: number]: string };
+a = { 123: "abc", 456: "def" };
+let b: { [key: string]: boolean };
+b = { abc: true, def: false, ghi: true };
+let c: { [id: number]: number[] };
+c = { 1: [1, 2, 3], 2: [4, 5, 6], 3: [7, 8, 9], 4: [10, 11, 12] };
+
+console.log(a[123]); // abc
+console.log(b["def"]); // false
+console.log(c[1]); // [ 1, 2, 3 ]
+
+console.log(a.123); // this doesn't work when the key is a number
+
+delete a[456];
+console.log(a); // { '123': 'abc' }
 ```

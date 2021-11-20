@@ -51,3 +51,13 @@ let b: number[] = [1, 2, 3, 4, 5];
 let c: boolean[];
 c = [true, false, false];
 let d: unknown[] = [1, "a", true, ["even", "another", "inner", "array"]];
+
+/**
+ * Dictionary
+ */
+let dicta: { [key: number]: string };
+dicta = { 123: "abc", 456: "def" };
+let dictb: { [key: string]: boolean };
+dictb = { abc: true, "def x": false, ghi: true };
+let dictc: { [id: number]: number[] };
+dictc = { 1: [1, 2, 3], 2: [4, 5, 6], 3: [7, 8, 9], 4: [10, 11, 12] };
