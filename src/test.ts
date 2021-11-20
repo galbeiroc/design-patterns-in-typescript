@@ -65,11 +65,37 @@ dictc = { 1: [1, 2, 3], 2: [4, 5, 6], 3: [7, 8, 9], 4: [10, 11, 12] };
 /**
  * Tuple
  */
- let tpla: [number, string]
- tpla = [1, 'abc']
- // tpla = [1, 'abc', true]
- let tplb: [string, boolean, number]
- tplb = ['abc', false, 123]
- 
- console.log(tpla[1])
- console.log(tplb[2])
+let tpla: [number, string];
+tpla = [1, "abc"];
+// tpla = [1, 'abc', true]
+let tplb: [string, boolean, number];
+tplb = ["abc", false, 123];
+
+console.log(tpla[1]);
+console.log(tplb[2]);
+
+/**
+ * Set
+ */
+let sa: Set<number>;
+sa = new Set([1, 2, 3, 4, 2]);
+let sb: Set<string>;
+sb = new Set(["a", "b", "c", "d", "a"]); // the second `a` is not added
+let sc: Set<unknown>;
+sc = new Set([1, "b", true]);
+
+const sd: Set<string> = new Set();
+sd.add("cat");
+sd.add("dog");
+sd.add("bird");
+
+console.log(sa);
+console.log(sb);
+console.log(sc);
+console.log(sd);
+
+sd.delete("cat");
+console.log(sd);
+
+console.log(sd.size);
+console.log(sd.has('dog')); 

@@ -183,3 +183,31 @@ a = [1, "abc", true]; // Type '[number, string, boolean]' is not assignable to t
 console.log(a[1]); // abc
 console.log(b[2]); // 123
 ```
+
+#### Set
+The Set object lets you store unique values of any type. Any duplicate items added to the Set won't be added.
+
+```ts
+let sa: Set<number>;
+sa = new Set([1, 2, 3, 4, 2]);
+let sb: Set<string>;
+sb = new Set(["a", "b", "c", "d", "a"]); // the second `a` is not added
+let sc: Set<unknown>;
+sc = new Set([1, "b", true]);
+
+console.log(sa); // Set(4) { 1, 2, 3, 4 }
+console.log(sb); // Set(4) { 'a', 'b', 'c', 'd' }
+console.log(sc); // Set(3) { 1, 'b', true }
+
+const d: Set<string> = new Set();
+d.add("cat");
+d.add("dog");
+d.add("bird");
+console.log(d); // Set(3) { 'cat', 'dog', 'bird' }
+
+d.delete("cat");
+console.log(sd); // Set(2) { 'dog', 'bird' }
+
+console.log(d.size); // 2
+console.log(d.has('dog')); // true
+```
