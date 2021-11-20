@@ -162,3 +162,24 @@ console.log(a.123); // this doesn't work when the key is a number
 delete a[456];
 console.log(a); // { '123': 'abc' }
 ```
+
+#### Tuple
+
+The Tuple is similar to an array, but you are explicitly indicating how many items are
+in the Tuple and of which type they are when you instantiate it. The Tuple type is not
+directly supported in JavaScript as a Tuple, but as an array instead. The rules of the
+Tuple are enforced in TypeScript only when it is created. After the Tuple is created,
+it behaves the same as an array. You can add/remove/edit items.
+
+```ts
+let a: [number, string];
+a = [1, "abc"];
+let b: [string, boolean, number];
+b = ["abc", false, 123];
+
+a = [1] // Type '[number]' is not assignable to type '[number, string]'.
+a = [1, "abc", true]; // Type '[number, string, boolean]' is not assignable to type '[number, string]'.
+
+console.log(a[1]); // abc
+console.log(b[2]); // 123
+```

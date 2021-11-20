@@ -61,3 +61,15 @@ let dictb: { [key: string]: boolean };
 dictb = { abc: true, "def x": false, ghi: true };
 let dictc: { [id: number]: number[] };
 dictc = { 1: [1, 2, 3], 2: [4, 5, 6], 3: [7, 8, 9], 4: [10, 11, 12] };
+
+/**
+ * Tuple
+ */
+ let tpla: [number, string]
+ tpla = [1, 'abc']
+ // tpla = [1, 'abc', true]
+ let tplb: [string, boolean, number]
+ tplb = ['abc', false, 123]
+ 
+ console.log(tpla[1])
+ console.log(tplb[2])
