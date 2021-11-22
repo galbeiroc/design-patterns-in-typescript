@@ -1,7 +1,101 @@
-function foo(bar: string) {
-  return "Hello, " + bar;
-}
+let foo: string;
+let bar: boolean;
+let baz: number;
+let qux: string[];
+let quuz: [number, string];
+let corge: { [key: number]: string };
+let grault: Set<number>;
 
-const baz = "ABC";
+foo = "ABC";
+bar = true;
+baz = 123;
+qux = ["a", "b", "c"];
+quuz = [1, "abc"];
+corge = { 123: "abc", 456: "def" };
+grault = new Set([1, 2, 3]);
 
-console.log(foo(baz));
+/**
+ * STRING
+ */
+
+let str: string;
+str = "ABC";
+str = "123";
+str = "it wasm't me";
+str = "it wasn't me";
+str = `abc ${str} def`; //abc it wasn't me def
+
+/**
+ * Boolean
+ */
+let bln: boolean;
+bln = true;
+bln = false;
+
+/**
+ * Number
+ */
+let num: number;
+num = 123; //decimal
+num = 123.456; //float
+num = 0xffff; //hex
+num = 0b10101; //binary - "0b"+num.toString(2)
+num = 0o671; //octal - "0o"+num.toString(8)
+
+/**
+ * Array
+ */
+let a: string[];
+a = ["a", "b", "c", "d"];
+let b: number[] = [1, 2, 3, 4, 5];
+let c: boolean[];
+c = [true, false, false];
+let d: unknown[] = [1, "a", true, ["even", "another", "inner", "array"]];
+
+/**
+ * Dictionary
+ */
+let dicta: { [key: number]: string };
+dicta = { 123: "abc", 456: "def" };
+let dictb: { [key: string]: boolean };
+dictb = { abc: true, "def x": false, ghi: true };
+let dictc: { [id: number]: number[] };
+dictc = { 1: [1, 2, 3], 2: [4, 5, 6], 3: [7, 8, 9], 4: [10, 11, 12] };
+
+/**
+ * Tuple
+ */
+let tpla: [number, string];
+tpla = [1, "abc"];
+// tpla = [1, 'abc', true]
+let tplb: [string, boolean, number];
+tplb = ["abc", false, 123];
+
+console.log(tpla[1]);
+console.log(tplb[2]);
+
+/**
+ * Set
+ */
+let sa: Set<number>;
+sa = new Set([1, 2, 3, 4, 2]);
+let sb: Set<string>;
+sb = new Set(["a", "b", "c", "d", "a"]); // the second `a` is not added
+let sc: Set<unknown>;
+sc = new Set([1, "b", true]);
+
+const sd: Set<string> = new Set();
+sd.add("cat");
+sd.add("dog");
+sd.add("bird");
+
+console.log(sa);
+console.log(sb);
+console.log(sc);
+console.log(sd);
+
+sd.delete("cat");
+console.log(sd);
+
+console.log(sd.size);
+console.log(sd.has('dog')); 
