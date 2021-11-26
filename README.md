@@ -231,3 +231,60 @@ class Dog {
 const dog = new Dog('pilin');
 dog.walk(5); // pilin the dog has walked 5 steps
 ```
+
+### Interfaces
+Interfaces in TypeScript are a useful tool that you can use for your classes to ensure that they
+conform to any specific rules that you want them to. This is especially useful if there are many
+people working on the same code base, and any classes need to follow any specific rules.
+
+```ts
+
+interface IAnimal {
+  name: string;
+  age: number;
+  feed(food: string, amount: number): void;
+}
+
+class Lion implements IAnimal {
+  name: string;
+  age: number;
+
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  feed(food: string, amount: number): void {
+    console.log(
+      "Feeding " + this.name + " the lion " + amount + " kg of " + food
+    );
+  }
+}
+
+const lion = new Lion("Pumba", 4);
+lion.feed("meat", 4);
+interface IAnimal {
+  name: string;
+  age: number;
+  feed(food: string, amount: number): void;
+}
+
+class Lion implements IAnimal {
+  name: string;
+  age: number;
+
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  feed(food: string, amount: number): void {
+    console.log(
+      "Feeding " + this.name + " the lion " + amount + " kg of " + food
+    );
+  }
+}
+
+const lion = new Lion("Pumba", 4);
+lion.feed("fish", 4); // Feeding Pumba the lion 4 kg of fish
+```

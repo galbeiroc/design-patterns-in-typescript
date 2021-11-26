@@ -122,9 +122,37 @@ class Dog {
   }
 
   walk(steps: number): void {
-    console.log(this.name + ' the dog has walked ' + steps + ' steps');
+    console.log(this.name + " the dog has walked " + steps + " steps");
   }
 }
 
-const dog = new Dog('pilin');
+const dog = new Dog("pilin");
 dog.walk(5);
+
+/**
+ * Interfaces
+ */
+interface IAnimal {
+  name: string;
+  age: number;
+  feed(food: string, amount: number): void;
+}
+
+class Lion implements IAnimal {
+  name: string;
+  age: number;
+
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  feed(food: string, amount: number): void {
+    console.log(
+      "Feeding " + this.name + " the lion " + amount + " kg of " + food
+    );
+  }
+}
+
+const lion = new Lion("Pumba", 4);
+lion.feed("meat", 4);
