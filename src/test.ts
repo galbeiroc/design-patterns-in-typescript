@@ -98,4 +98,33 @@ sd.delete("cat");
 console.log(sd);
 
 console.log(sd.size);
-console.log(sd.has('dog')); 
+console.log(sd.has("dog"));
+
+/**
+ * Classes
+ */
+class Cat {
+  constructor() {}
+
+  walk(): void {
+    console.log("Cat is walking");
+  }
+}
+
+const cat = new Cat();
+cat.walk();
+
+class Dog {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  walk(steps: number): void {
+    console.log(this.name + ' the dog has walked ' + steps + ' steps');
+  }
+}
+
+const dog = new Dog('pilin');
+dog.walk(5);
