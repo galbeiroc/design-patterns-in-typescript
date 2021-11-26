@@ -211,3 +211,23 @@ console.log(sd); // Set(2) { 'dog', 'bird' }
 console.log(d.size); // 2
 console.log(d.has('dog')); // true
 ```
+
+### Classes
+Simply, they are a template that can be used when creating custom objects.
+
+```ts
+class Dog {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  walk(steps: number): void {
+    console.log(this.name + ' the dog has walked ' + steps + ' steps');
+  }
+}
+
+const dog = new Dog('pilin');
+dog.walk(5); // pilin the dog has walked 5 steps
+```
