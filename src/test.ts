@@ -214,3 +214,25 @@ const horse = new Horse("Galopante", 1);
 
 pig.feed("Afrecho", 4);
 horse.feed("grass", 8);
+
+/**
+ * Access Modifiers
+ */
+// Public
+class Device {
+  protected name: string;
+
+  constructor(name:string) {
+    this.name = name;
+  }
+
+}
+
+class TV extends Device {
+  constructor(name: string) {
+    super(name)
+  }
+}
+
+const device = new Device('Tv');
+console.log(device.name)
