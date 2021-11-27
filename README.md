@@ -262,14 +262,21 @@ class Lion implements IAnimal {
 }
 
 const lion = new Lion("Pumba", 4);
-lion.feed("meat", 4);
-interface IAnimal {
-  name: string;
-  age: number;
-  feed(food: string, amount: number): void;
-}
+lion.feed("meat", 4); // Feeding Pumba the lion 4 kg of fish
+```
 
-class Lion implements IAnimal {
+### Abstract class
+You can extend classes with Abstract classes. Consider an abstract class as a base class. It is a
+class that may have methods and properties that are common, but another class can be created
+which extends from this base class and overrides any existing methods or can add additional methods
+and properties specific for itself.
+
+It is different than an `interface` in the way that is not indicating rules that the class must follow,
+but the class that is extending will already have its own copies of the base classes properties and
+methods once any new object is instantiated using it.
+
+```ts
+class Animal {
   name: string;
   age: number;
 
@@ -280,11 +287,47 @@ class Lion implements IAnimal {
 
   feed(food: string, amount: number): void {
     console.log(
-      "Feeding " + this.name + " the lion " + amount + " kg of " + food
+      "Feeding " +
+        this.name +
+        " the " +
+        this.constructor.name +
+        " " +
+        amount +
+        " kg of " +
+        food
     );
   }
 }
 
-const lion = new Lion("Pumba", 4);
-lion.feed("fish", 4); // Feeding Pumba the lion 4 kg of fish
+class Pig extends Animal {
+  isHungry: boolean;
+  name = 'Emy' //override property
+  constructor(name: string, age: number, isHungry: boolean) {
+    super(name, age);
+    // this.name = name;
+    this.isHungry = isHungry;
+  }
+
+  feed(food: string, amount: number): void {
+    if (this.isHungry) {
+      super.feed(food, amount);
+    } else {
+      console.log(
+        "Feeding " +
+          this.name +
+          " the " +
+          this.constructor.name +
+          " is not hangry"
+      );
+    }
+  }
+}
+
+class Horse extends Animal {}
+
+const pig = new Pig("Niño", 2, false);   // Feeding Niño the Pig is not hangry
+const horse = new Horse("Galopante", 1);
+
+pig.feed("Afrecho", 4);
+horse.feed("grass", 8); // Feeding Galopante the Horse 8 kg of grass
 ```

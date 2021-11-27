@@ -156,3 +156,61 @@ class Lion implements IAnimal {
 
 const lion = new Lion("Pumba", 4);
 lion.feed("meat", 4);
+
+/**
+ * Abstract classes
+ */
+class Animal {
+  name: string;
+  age: number;
+
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  feed(food: string, amount: number): void {
+    console.log(
+      "Feeding " +
+        this.name +
+        " the " +
+        this.constructor.name +
+        " " +
+        amount +
+        " kg of " +
+        food
+    );
+  }
+}
+
+class Pig extends Animal {
+  isHungry: boolean;
+  name = 'Emy' //override property
+  constructor(name: string, age: number, isHungry: boolean) {
+    super(name, age);
+    // this.name = name;
+    this.isHungry = isHungry;
+  }
+
+  feed(food: string, amount: number): void {
+    if (this.isHungry) {
+      super.feed(food, amount);
+    } else {
+      console.log(
+        "Feeding " +
+          this.name +
+          " the " +
+          this.constructor.name +
+          " is not hangry"
+      );
+    }
+  }
+}
+
+class Horse extends Animal {}
+
+const pig = new Pig("Niño", 2, false);
+const horse = new Horse("Galopante", 1);
+
+pig.feed("Afrecho", 4);
+horse.feed("grass", 8);
