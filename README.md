@@ -331,3 +331,66 @@ const horse = new Horse("Galopante", 1);
 pig.feed("Afrecho", 4);
 horse.feed("grass", 8); // Feeding Galopante the Horse 8 kg of grass
 ```
+
+### Access Modifiers
+TypeScript supports access modifiers for your class properties and methods.
+
+#### Public
+In JavaScript, all class properties are public by default so there is no need to write
+the public keyword in your TypeScript files.
+
+```ts
+class Device {
+  public name: string;
+
+  constructor(name:string) {
+    this.name = name;
+  }
+
+}
+
+const device = new Device('Tv');
+console.log(device.name)
+```
+
+#### Private
+TypeScript also has its own way to declare a member as being marked private, it cannot be accessed
+from outside of its containing class.
+
+```ts
+class Device {
+  private name: string;
+
+  constructor(name:string) {
+    this.name = name;
+  }
+
+}
+
+const device = new Device('Tv');
+console.log(device.name) //Property 'name' is private and only accessible within class 'Device'
+```
+
+#### Protected
+The protected modifier acts much like the private modifier with the exception that members declared
+protected can also be accessed within subclasses.
+
+```ts
+class Device {
+  protected name: string;
+
+  constructor(name:string) {
+    this.name = name;
+  }
+
+}
+
+class TV extends Device {
+  constructor(name: string) {
+    super(name)
+  }
+}
+
+const device = new Device('Tv');
+console.log(device.name) // Property 'name' is protected and only accessible within class 'Device' and its subclasses
+```
