@@ -116,6 +116,7 @@ cat.walk();
 
 class Dog {
   name: string;
+  stepsWalked: number = 0;
 
   constructor(name: string) {
     this.name = name;
@@ -123,11 +124,18 @@ class Dog {
 
   walk(steps: number): void {
     console.log(this.name + " the dog has walked " + steps + " steps");
+    this.stepsWalked += steps;
+  }
+
+  getTotalStepCount(): number {
+    return this.stepsWalked
   }
 }
 
 const dog = new Dog("pilin");
 dog.walk(5);
+dog.walk(15);
+console.log(`The dog has walked ${dog.getTotalStepCount()} steps`);
 
 /**
  * Interfaces
@@ -156,6 +164,55 @@ class Lion implements IAnimal {
 
 const lion = new Lion("Pumba", 4);
 lion.feed("meat", 4);
+
+/**
+ * Extending classes
+ */
+class Car {
+  reference: string;
+  model: number;
+  color: string;
+
+  constructor(reference: string, model: number, color: string) {
+    this.reference = reference;
+    this.model = model;
+    this.color = color;
+  }
+
+  accelerate(transmissionType: string, currentSpeed: number): void {
+    console.log(
+      'Accelerate', this.reference,
+      'the', this.constructor.name,
+      'transmission', transmissionType,
+      'has current speed of', currentSpeed, 'kms/h'
+    )
+  }
+}
+
+class Mitsubishi extends Car {
+  hasFuel: boolean;
+
+  constructor(reference: string, model: number, color: string, hasFuel: boolean) {
+    super(reference, model, color);
+    this.hasFuel = hasFuel;
+  }
+
+  accelerate(transmissionType: string, currentSpeed: number): void {
+    if (this.hasFuel) {
+      super.accelerate(transmissionType, currentSpeed);
+    } else {
+      console.log(this.reference, 'the', this.constructor.name, 'doesnt have fuel')
+    }
+  }
+}
+
+class Chevrolet extends Car {};
+
+const chevrolet = new Chevrolet('Onix', 2018, 'grey');
+chevrolet.accelerate('Manual', 110);
+const mitsubishi = new Mitsubishi('Montero', 2018, 'grey', false);
+mitsubishi.accelerate('Automatic', 180);
+
 
 /**
  * Abstract classes
@@ -235,4 +292,4 @@ class TV extends Device {
 }
 
 const device = new Device('Tv');
-console.log(device.name)
+// console.log(device.name)
