@@ -265,6 +265,59 @@ const lion = new Lion("Pumba", 4);
 lion.feed("meat", 4); // Feeding Pumba the lion 4 kg of fish
 ```
 
+### Extending clases
+You can extend any existing class templates by using the `extends` keyword. The new class definition will be made up of the original class, but can optionally include its own new bespoke constructor, properties and/or methods. The new class definition is known as the derived class or subclass.
+Extending a class is a different concept than implementing an interface.
+With the derived class, the original class being extended is called the **base** or **super** class. It is a class that may have methods and properties that are common, but another class can be created from it that extends from this base/super class and has the option to override the constructor, methods and properties.The derived class also has the option to create additional methods and properties specific for its own needs. If the base class is using an interface, then any derived class will already comply provided that the base class was already correctly complying with its chosen interface.
+
+```ts
+class Car {
+  reference: string;
+  model: number;
+  color: string;
+
+  constructor(reference: string, model: number, color: string) {
+    this.reference = reference;
+    this.model = model;
+    this.color = color;
+  }
+
+  accelerate(transmissionType: string, currentSpeed: number): void {
+    console.log(
+      'Accelerate', this.reference,
+      'the', this.constructor.name,
+      'transmission', transmissionType,
+      'has current speed of', currentSpeed, 'kms/h'
+    )
+  }
+}
+
+class Mitsubishi extends Car {
+  hasFuel: boolean;
+
+  constructor(reference: string, model: number, color: string, hasFuel: boolean) {
+    super(reference, model, color); // pointing base class
+    this.hasFuel = hasFuel;
+  }
+
+  accelerate(transmissionType: string, currentSpeed: number): void { //override method
+    if (this.hasFuel) {
+      super.accelerate(transmissionType, currentSpeed);
+    } else {
+      console.log(this.reference, 'the', this.constructor.name, 'doesnt have fuel')
+    }
+  }
+}
+
+class Chevrolet extends Car {};
+
+const chevrolet = new Chevrolet('Onix', 2018, 'grey');
+chevrolet.accelerate('Manual', 110);
+const mitsubishi = new Mitsubishi('Montero', 2018, 'grey', false);
+mitsubishi.accelerate('Automatic', 180);
+```
+
+
 ### Abstract class
 You can extend classes with Abstract classes. Consider an abstract class as a base class. It is a
 class that may have methods and properties that are common, but another class can be created
