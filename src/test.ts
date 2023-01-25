@@ -217,13 +217,56 @@ mitsubishi.accelerate('Automatic', 180);
 /**
  * Abstract classes
  */
-class Animal {
-  name: string;
+abstract class Animal {
+  abstract name: string;
   age: number;
 
-  constructor(name: string, age: number) {
-    this.name = name;
+  constructor(age: number) {
+    // this.name = name; // Abstract property 'name' in class 'Animal' cannot be accessed in the constructor.
     this.age = age;
+  }
+
+  abstract feed(food: string, amount: number): void;
+}
+
+class Pig extends Animal {
+  isHungry: boolean;
+  name: string;
+  constructor(name: string, age: number, isHungry: boolean) {
+    super(age);
+    this.name = name;
+    this.isHungry = isHungry;
+  }
+
+  feed(food: string, amount: number): void {
+    if (this.isHungry) {
+      console.log(
+        "Feeding " +
+          this.name +
+          " the " +
+          this.constructor.name +
+          " " +
+          amount +
+          " kg of " +
+          food
+      );
+    } else {
+      console.log(
+        "Feeding " +
+          this.name +
+          " the " +
+          this.constructor.name +
+          " is not hangry"
+      );
+    }
+  }
+}
+
+class Horse extends Animal {
+  name: string;
+  constructor(name: string, age:number) {
+    super(age);
+    this.name = name;
   }
 
   feed(food: string, amount: number): void {
@@ -239,32 +282,6 @@ class Animal {
     );
   }
 }
-
-class Pig extends Animal {
-  isHungry: boolean;
-  name = 'Emy' //override property
-  constructor(name: string, age: number, isHungry: boolean) {
-    super(name, age);
-    // this.name = name;
-    this.isHungry = isHungry;
-  }
-
-  feed(food: string, amount: number): void {
-    if (this.isHungry) {
-      super.feed(food, amount);
-    } else {
-      console.log(
-        "Feeding " +
-          this.name +
-          " the " +
-          this.constructor.name +
-          " is not hangry"
-      );
-    }
-  }
-}
-
-class Horse extends Animal {}
 
 const pig = new Pig("Niño", 2, false);
 const horse = new Horse("Galopante", 1);
@@ -288,6 +305,7 @@ class Device {
 class TV extends Device {
   constructor(name: string) {
     super(name)
+    console.log(this.name);
   }
 }
 
