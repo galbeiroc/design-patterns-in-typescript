@@ -317,17 +317,7 @@ const mitsubishi = new Mitsubishi('Montero', 2018, 'grey', false);
 mitsubishi.accelerate('Automatic', 180);
 ```
 
-
-### Abstract class
-You can extend classes with Abstract classes. Consider an abstract class as a base class. It is a
-class that may have methods and properties that are common, but another class can be created
-which extends from this base class and overrides any existing methods or can add additional methods
-and properties specific for itself.
-
-It is different than an `interface` in the way that is not indicating rules that the class must follow,
-but the class that is extending will already have its own copies of the base classes properties and
-methods once any new object is instantiated using it.
-
+***Extending Class Example 2***
 ```ts
 class Animal {
   name: string;
@@ -385,6 +375,94 @@ pig.feed("Afrecho", 4);
 horse.feed("grass", 8); // Feeding Galopante the Horse 8 kg of grass
 ```
 
+### Abstract class
+You can extend classes with Abstract classes. Consider an abstract class as a base class. It is a
+class that may have methods and properties that are common, but another class can be created
+which extends from this base class and overrides any existing methods or can add additional methods
+and properties specific for itself.
+
+It is different than an `interface` in the way that is not indicating rules that the class must follow,
+but the class that is extending will already have its own copies of the base classes properties and
+methods once any new object is instantiated using it.
+Abstract classes are like a mixture of implementing interfaces and extending a class in one step. You can create a class with optional methods and properties, but also indicate which methods and properties must be implemented in the derived class. Note that your base class, despite enforcing abstract rules, is still able to itself implement any interfaces you desire.
+
+Use the `abstract` keyword to indicate a class contains `abstract` methods or properties.
+If any methods are marked as abstract, then they must also be implemented in the derived class.
+
+```ts
+abstract class Animal {
+  abstract name: string;
+  age: number;
+
+  constructor(age: number) {
+    // this.name = name; // Abstract property 'name' in class 'Animal' cannot be accessed in the constructor.
+    this.age = age;
+  }
+
+  abstract feed(food: string, amount: number): void;
+}
+
+class Pig extends Animal {
+  isHungry: boolean;
+  name: string;
+  constructor(name: string, age: number, isHungry: boolean) {
+    super(age);
+    this.name = name;
+    this.isHungry = isHungry;
+  }
+
+  feed(food: string, amount: number): void {
+    if (this.isHungry) {
+      console.log(
+        "Feeding " +
+          this.name +
+          " the " +
+          this.constructor.name +
+          " " +
+          amount +
+          " kg of " +
+          food
+      );
+    } else {
+      console.log(
+        "Feeding " +
+          this.name +
+          " the " +
+          this.constructor.name +
+          " is not hangry"
+      );
+    }
+  }
+}
+
+class Horse extends Animal {
+  name: string;
+  constructor(name: string, age:number) {
+    super(age);
+    this.name = name;
+  }
+
+  feed(food: string, amount: number): void {
+    console.log(
+      "Feeding " +
+        this.name +
+        " the " +
+        this.constructor.name +
+        " " +
+        amount +
+        " kg of " +
+        food
+    );
+  }
+}
+
+const pig = new Pig("Niño", 2, false);
+const horse = new Horse("Galopante", 1);
+
+pig.feed("Afrecho", 4);
+horse.feed("grass", 8);
+```
+
 ### Access Modifiers
 TypeScript supports access modifiers for your class properties and methods.
 
@@ -417,7 +495,13 @@ class Device {
   constructor(name:string) {
     this.name = name;
   }
+}
 
+class TV extends Device {
+  constructor(name: string) {
+    super(name)
+    console.log(this.name); // Property 'name' is private and only accessible within class 'Device'.
+  }
 }
 
 const device = new Device('Tv');
