@@ -1,3 +1,5 @@
+import { Cat as CatClass, Dog as DogClass } from './animals';
+
 let foo: string;
 let bar: boolean;
 let baz: number;
@@ -364,3 +366,11 @@ const CIRCLE1 = new Circle(1);
 const CIRCLE2 = new Circle(2);
 console.log('CIRCLE1 Area = ' + Circle.PI * CIRCLE1.radius ** 2);
 console.log('CIRCLE2 Area = ' + Circle.PI * CIRCLE2.radius ** 2);
+
+/**
+ * ES6 Modules
+ */
+const catClass = new CatClass('Tibu', 3);
+console.log(catClass.name);
+const dogClass = new DogClass('Manin', 2);
+console.log(dogClass.name);

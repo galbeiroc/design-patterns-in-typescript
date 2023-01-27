@@ -591,3 +591,40 @@ const CIRCLE2 = new Circle(2);
 console.log('CIRCLE1 Area = ' + Circle.PI * CIRCLE1.radius ** 2);
 console.log('CIRCLE2 Area = ' + Circle.PI * CIRCLE2.radius ** 2);
 ```
+
+### ES6 Modules
+On larger projects, it is common to split up your code into separate files. When doing this, you will need to tell each file which other file it needs to reference in case it is using objects, classes, types or interfaces from the other files.
+
+`./src/test.ts`
+```ts
+import { Cat, Dog } from './animals'
+
+const CAT = new Cat('Cosmo', 8)
+console.log(CAT.name)
+const DOG = new Dog('Rusty', 12)
+console.log(DOG.name)
+```
+`./src/animals.ts`
+```ts
+import Animal from './animal'
+
+export class Cat extends Animal {
+    constructor(name: string, age: number) {
+        super(name, age)
+    }
+}
+
+export class Dog extends Animal {}
+```
+`./src/animal.ts`
+```ts
+export default class Animal {
+    name: string
+    age: number
+
+    constructor(name: string, age: number) {
+        this.name = name
+        this.age = age
+    }
+}
+```
