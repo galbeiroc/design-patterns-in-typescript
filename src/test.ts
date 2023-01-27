@@ -311,3 +311,56 @@ class TV extends Device {
 
 const device = new Device('Tv');
 // console.log(device.name)
+
+/**
+ * Static Members
+ */
+class ClassWithProperty {
+  abc = 123
+}
+
+class ClassWithStaticProperty {
+  static abc = 123
+}
+
+class ClassWithMethod {
+  method() {
+      return 123
+  }
+}
+
+class ClassWithStaticMethod {
+  static method() {
+      return 123
+  }
+}
+
+const classWithProperty = new ClassWithProperty();
+console.log(classWithProperty.abc); // 123
+
+// const classWithStaticProperty = new ClassWithStaticProperty();
+// console.log(classWithStaticProperty.abc); // Property 'abc' does not exist on type 'ClassWithStaticProperty'.
+console.log(ClassWithStaticProperty.abc); // 123
+
+const classWithMethod = new ClassWithMethod();
+console.log(classWithMethod.method());
+
+// const classWithStaticMethod = new ClassWithStaticMethod();
+// console.log(classWithStaticMethod.method()); // Property 'method' does not exist on type 'ClassWithStaticMethod'
+console.log(ClassWithStaticMethod.method());
+
+
+class Circle {
+  radius: number;
+  static PI = 3.14;
+
+  constructor(radius: number) {
+    this.radius = radius
+  }
+}
+
+console.log('Circle.PI = ' + Circle.PI);
+const CIRCLE1 = new Circle(1);
+const CIRCLE2 = new Circle(2);
+console.log('CIRCLE1 Area = ' + Circle.PI * CIRCLE1.radius ** 2);
+console.log('CIRCLE2 Area = ' + Circle.PI * CIRCLE2.radius ** 2);

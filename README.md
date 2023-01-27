@@ -531,3 +531,63 @@ class TV extends Device {
 const device = new Device('Tv');
 console.log(device.name) // Property 'name' is protected and only accessible within class 'Device' and its subclasses
 ```
+
+### Static Members
+Now it's possible to make objects that were instantiated from classes share the same methods and properties behind the scenes, and that is using the `static` keyword.
+
+The code below shows some examples of the `static` keyword and how the `static` properties and methods are referred to.
+
+```ts
+class ClassWithProperty {
+    abc = 123
+}
+
+class ClassWithStaticProperty {
+    static abc = 123
+}
+
+class ClassWithMethod {
+    method() {
+        return 123
+    }
+}
+
+class ClassWithStaticMethod {
+    static method() {
+        return 123
+    }
+}
+
+const classWithProperty = new ClassWithProperty();
+console.log(classWithProperty.abc); // 123
+
+// const classWithStaticProperty = new ClassWithStaticProperty();
+// console.log(classWithStaticProperty.abc); // Property 'abc' does not exist on type 'ClassWithStaticProperty'.
+console.log(ClassWithStaticProperty.abc); // 123
+
+const classWithMethod = new ClassWithMethod();
+console.log(classWithMethod.method());
+
+// const classWithStaticMethod = new ClassWithStaticMethod();
+// console.log(classWithStaticMethod.method()); // Property 'method' does not exist on type 'ClassWithStaticMethod'
+console.log(ClassWithStaticMethod.method());
+```
+
+One particular example where a static property may be useful is in the example below where the property `PI` doesn't need to be recreated across each new instance of the Circle class, but all instances of the `circle` can point to the same value stored at the class level instead.
+
+```ts
+class Circle {
+  radius: number;
+  static PI = 3.14;
+
+  constructor(radius: number) {
+    this.radius = radius
+  }
+}
+
+console.log('Circle.PI = ' + Circle.PI);
+const CIRCLE1 = new Circle(1);
+const CIRCLE2 = new Circle(2);
+console.log('CIRCLE1 Area = ' + Circle.PI * CIRCLE1.radius ** 2);
+console.log('CIRCLE2 Area = ' + Circle.PI * CIRCLE2.radius ** 2);
+```
