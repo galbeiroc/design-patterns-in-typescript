@@ -665,3 +665,15 @@ A class that implements an interface must implement all the methods declared in 
 * `Pseudocode Annotation`: A box with a dashed line and a circle placed near a class method.
 
 Pseudocode is a plain language description of the steps in an algorithm and used to portray a concept without needing to write long lines of code.
+
+## Creational
+### Factory Design Pattern
+When developing code, you may instantiate objects directly in methods or in classes. While this is quite normal, you may want to add an extra abstraction between the creation of the object and where it is used in your project.
+
+You can use the Factory pattern to add that extra abstraction. The Factory pattern is one of the easiest patterns to understand and implement.
+
+Adding an extra abstraction will also allow you to dynamically choose classes to instantiate based on some kind of logic.
+
+This separation also makes your code easier to read and document.
+
+The Factory pattern is really about adding that extra abstraction between the object creation and where it is used. This gives you extra options that you can more easily extend in the future.
