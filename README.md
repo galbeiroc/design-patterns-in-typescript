@@ -691,49 +691,98 @@ The Factory pattern is really about adding that extra abstraction between the ob
 <img src='./assets/factory.png' alt="Factory UML Diagram" />
 
 ```ts
-interface IProduct {
-  name: string;
+// dimension.ts
+export type dimension = {
+  height: number;
+  width: number;
+  depth: number;
 }
 
-class ConcreteProduct implements IProduct {
-  name = '';
+// chair.ts
+import { dimension } from "./dimension";
+
+// A Chair Interface
+export interface IChair {
+  height: number;
+  width: number;
+  depth: number;
+  getDimension: () => dimension;
 }
 
-class ConcreteProductA extends ConcreteProduct {
-  constructor() {
-    super();
-    this.name = 'ConcreteProductA';
-  }
-}
+// Chair Base Class
+export default class Chair implements IChair {
+  height = 0;
+  width = 0;
+  depth = 0;
 
-class ConcreteProductB extends ConcreteProduct {
-  constructor() {
-    super();
-    this.name = 'ConcreteProductB';
-  }
-}
-
-class ConcreteProductC extends ConcreteProduct {
-  constructor() {
-    super();
-    this.name = 'ConcreteProductC';
-  }
-}
-
-class Creator {
-  static creatorObject(someProperty: string) {
-    if (someProperty === 'a') {
-      return new ConcreteProductA();
-    } else if (someProperty === 'b') {
-      return new ConcreteProductB();
-    } else {
-      return new ConcreteProductC();
+  getDimension(): dimension {
+    return {
+      height: this.height,
+      width: this.width,
+      depth: this.depth
     }
   }
 }
 
-const PRODUCT = Creator.creatorObject('b');
-console.log(PRODUCT.name); // 'ConcreteProductB'
+// smallChair.ts
+import Chair from "./chair";
+
+export default class SmallChair extends Chair {
+  constructor() {
+    super();
+    this.height = 40;
+    this.width = 40;
+    this.depth = 40;
+  }
+}
+
+// mediumChair.ts
+import Chair from "./chair";
+
+export default class MediumChair extends Chair {
+  constructor() {
+    super();
+    this.height = 60;
+    this.width = 60;
+    this.depth = 60;
+  }
+}
+
+// bigChair.ts
+import Chair from "./chair";
+
+export default class BigChair extends Chair {
+  constructor() {
+    super();
+    this.height = 80;
+    this.width = 80;
+    this.depth = 80;
+  }
+}
+
+// chairFactory.ts
+import BigChair from "./bigChair";
+import { IChair } from "./chair";
+import MediumChair from "./mediumChair";
+import SmallChair from "./smallChair";
+
+export default class ChairFactory {
+  static getChair(chair: string): IChair {
+    if (chair === 'BigChair') {
+      return new BigChair();
+    } else if (chair === 'MediumChair') {
+      return new MediumChair();
+    } else {
+      return new SmallChair();
+    }
+  }
+}
+
+// Factory use case - example code
+import ChairFactory from './chairFactory';
+
+const CHAIR = ChairFactory.getChair('SmallChair');
+console.log(CHAIR.getDimension());
 ```
 
 #### Summary
