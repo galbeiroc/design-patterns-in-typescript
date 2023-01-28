@@ -39,5 +39,5 @@ class Creator {
   }
 }
 
-const PRODUCT = Creator.creatorObject('cc');
+const PRODUCT = Creator.creatorObject('b');
 console.log(PRODUCT.name);
