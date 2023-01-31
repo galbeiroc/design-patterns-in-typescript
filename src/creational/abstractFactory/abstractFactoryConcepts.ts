@@ -1,0 +1,28 @@
+// Abstract Factory Concept Sample Code
+import { FactoryA, IProductA } from './factoryA';
+import { FactoryB, IProductB } from './factoryB';
+
+interface IProduct extends IProductA, IProductB {};
+
+class AbstractFactory {
+  static createObject(factory: string): IProduct | undefined {
+    try {
+      if (['aa', 'ab', 'ac'].indexOf(factory) > -1) {
+        return FactoryA.getObject(factory[1]);
+      }
+      if (['ba', 'bb', 'bc'].indexOf(factory) > -1) {
+        return FactoryB.getObject(factory[1]);
+      }
+      throw new Error('No Factory not Found');
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
+
+// Client
+let PRODUCT = AbstractFactory.createObject('ab');
+console.log(PRODUCT); // ConcreteProductB { name: 'FactoryB:ConcreteProductB' }
+
+PRODUCT = AbstractFactory.createObject('bc');
+console.log(PRODUCT); // ConcreteProductC { name: 'FactoryC:ConcreteProductC' }
