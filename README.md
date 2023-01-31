@@ -665,3 +665,131 @@ A class that implements an interface must implement all the methods declared in 
 * `Pseudocode Annotation`: A box with a dashed line and a circle placed near a class method.
 
 Pseudocode is a plain language description of the steps in an algorithm and used to portray a concept without needing to write long lines of code.
+
+## Creational
+### Factory Design Pattern
+When developing code, you may instantiate objects directly in methods or in classes. While this is quite normal, you may want to add an extra abstraction between the creation of the object and where it is used in your project.
+
+You can use the Factory pattern to add that extra abstraction. The Factory pattern is one of the easiest patterns to understand and implement.
+
+Adding an extra abstraction will also allow you to dynamically choose classes to instantiate based on some kind of logic.
+
+This separation also makes your code easier to read and document.
+
+The Factory pattern is really about adding that extra abstraction between the object creation and where it is used. This gives you extra options that you can more easily extend in the future.
+
+#### Terminology
+
+***Concrete Creator***: The client application, class or method that calls the Creator (Factory method).
+
+***Product Interface***: The interface describing the attributes and methods that the Factory will require in order to create the final product/object.
+
+***Creator***: The Factory class. Declares the Factory method that will return the object requested from it.
+
+***Concrete Product***: The object returned from the Factory. The object implements the Product interface.
+
+<img src='./assets/factory.png' alt="Factory UML Diagram" />
+
+```ts
+// dimension.ts
+export type dimension = {
+  height: number;
+  width: number;
+  depth: number;
+}
+
+// chair.ts
+import { dimension } from "./dimension";
+
+// A Chair Interface
+export interface IChair {
+  height: number;
+  width: number;
+  depth: number;
+  getDimension: () => dimension;
+}
+
+// Chair Base Class
+export default class Chair implements IChair {
+  height = 0;
+  width = 0;
+  depth = 0;
+
+  getDimension(): dimension {
+    return {
+      height: this.height,
+      width: this.width,
+      depth: this.depth
+    }
+  }
+}
+
+// smallChair.ts
+import Chair from "./chair";
+
+export default class SmallChair extends Chair {
+  constructor() {
+    super();
+    this.height = 40;
+    this.width = 40;
+    this.depth = 40;
+  }
+}
+
+// mediumChair.ts
+import Chair from "./chair";
+
+export default class MediumChair extends Chair {
+  constructor() {
+    super();
+    this.height = 60;
+    this.width = 60;
+    this.depth = 60;
+  }
+}
+
+// bigChair.ts
+import Chair from "./chair";
+
+export default class BigChair extends Chair {
+  constructor() {
+    super();
+    this.height = 80;
+    this.width = 80;
+    this.depth = 80;
+  }
+}
+
+// chairFactory.ts
+import BigChair from "./bigChair";
+import { IChair } from "./chair";
+import MediumChair from "./mediumChair";
+import SmallChair from "./smallChair";
+
+export default class ChairFactory {
+  static getChair(chair: string): IChair {
+    if (chair === 'BigChair') {
+      return new BigChair();
+    } else if (chair === 'MediumChair') {
+      return new MediumChair();
+    } else {
+      return new SmallChair();
+    }
+  }
+}
+
+// Factory use case - example code
+import ChairFactory from './chairFactory';
+
+const CHAIR = ChairFactory.getChair('SmallChair');
+console.log(CHAIR.getDimension());
+```
+
+#### Summary
+
+* The Factory Pattern defers the creation of the final object to a subclass.
+* The Factory pattern is about inserting another layer/abstraction between instantiating an object and where in your code it is actually used.
+* It is unknown what or how many objects you will need to be created until runtime.
+* You want to localize knowledge of the specifics of instantiating a particular object to the subclass so that the client doesn't need to be concerned about the details.
+* You want to create an external framework, that an application can import/reference, and hide the details of the specifics involved in creating the final object/product.
+* The unique factor that defines the Factory pattern, is that your project now defers the creation of objects to the subclass that the factory had delegated it to.
