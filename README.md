@@ -690,6 +690,8 @@ The Factory pattern is really about adding that extra abstraction between the ob
 
 <img src='./assets/factory.png' alt="Factory UML Diagram" />
 
+#### Source Code
+
 ```ts
 // dimension.ts
 export type dimension = {
@@ -793,3 +795,25 @@ console.log(CHAIR.getDimension());
 * You want to localize knowledge of the specifics of instantiating a particular object to the subclass so that the client doesn't need to be concerned about the details.
 * You want to create an external framework, that an application can import/reference, and hide the details of the specifics involved in creating the final object/product.
 * The unique factor that defines the Factory pattern, is that your project now defers the creation of objects to the subclass that the factory had delegated it to.
+
+### Abstract Factory Design Pattern
+
+The Abstract Factory Pattern adds an abstraction layer over multiple other creational pattern implementations.
+
+To begin with, in simple terms, think if it as a Factory that can return Factories. Although you will find examples of it also being used to return Builder, Prototypes, Singletons or other design pattern implementations.
+
+#### Terminology
+
+***Client***: The client application that calls the Abstract Factory. It's the same process as the *Concrete Creator* in the Factory design pattern.
+
+***Abstract Factory***: A common interface over all the sub factories.
+
+***Concrete Factory***: The sub factory of the Abstract Factory and contains method(s) to allow creating the Concrete Product.
+
+***Abstract Product***: The interface and/or abstraction for the product that the sub factory returns.
+
+***Concrete Product***: The object that is finally returned.
+
+<img src='./assets/abstract-factory.png' alt="Abstract Factory UML Diagram" />
+
+#### Source Code
