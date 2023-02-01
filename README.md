@@ -822,3 +822,244 @@ You can create an extra module called FurnitureFactory, to handle the chair and 
 <img src='./assets/abstract-factory.png' alt="Abstract Factory UML Diagram" />
 
 #### Source Code
+
+```ts
+// dimension.ts
+export type dimension = {
+  height: number;
+  width: number;
+  depth: number;
+}
+
+// chair.ts
+import { dimension } from "./dimension";
+
+export interface IChair {
+  name: string;
+  height: number;
+  width: number;
+  depth: number;
+
+  getDimension(): dimension;
+}
+
+export class Chair implements IChair {
+  name = '';
+  height = 0;
+  width = 0;
+  depth = 0;
+
+  getDimension(): dimension {
+    return {
+      width: this.width,
+      height: this.height,
+      depth: this.depth
+    }
+  }
+}
+
+// smallChair.ts
+import { Chair } from "./chair";
+
+export class SmallChair extends Chair {
+  constructor() {
+    super();
+    this.name = 'Small Chair';
+    this.height = 40;
+    this.width = 40;
+    this.depth = 40;
+  }
+}
+
+// mediumChair.ts
+import { Chair } from "./chair";
+
+export class MediumChair extends Chair {
+  constructor() {
+    super();
+    this.name = 'Medium Chair';
+    this.height = 60;
+    this.width = 60;
+    this.depth = 60;
+  }
+}
+
+// bigChair.ts
+import { Chair } from "./chair";
+
+export class BigChair extends Chair {
+  constructor() {
+    super();
+    this.name = 'Big Chair';
+    this.height = 80;
+    this.width = 80;
+    this.depth = 80;
+  }
+}
+
+// chairFactory.ts
+import { BigChair } from "./bigChair";
+import { Chair, IChair } from "./chair";
+import { MediumChair } from "./mediumChair";
+import { SmallChair } from "./smallChair";
+
+enum ChairsType {
+  SmallChair = 'SmallChair',
+  MediumChair = 'MediumChair',
+  BigChair = 'BigChair'
+}
+
+export class ChairFactory {
+  static getChair(chairType: string): IChair {
+    try {
+      if(chairType === ChairsType.SmallChair) {
+        return new SmallChair();
+      } else if(chairType === ChairsType.MediumChair) {
+        return new MediumChair();
+      } else if (chairType === ChairsType.BigChair) {
+        return new BigChair();
+      } else {
+        throw new Error('Class not found');
+      }
+    } catch(e) {
+      console.log(e)
+    }
+    return new Chair();
+  }
+}
+
+// table.ts
+import { dimension } from "./dimension";
+
+export interface ITable {
+  name: string;
+  height: number;
+  width: number;
+  depth: number;
+
+  getDimension(): dimension;
+}
+
+export class Table implements ITable {
+  name = '';
+  height = 0;
+  width = 0;
+  depth = 0;
+
+  getDimension(): dimension {
+    return {
+      width: this.width,
+      height: this.height,
+      depth: this.depth
+    }
+  }
+}
+
+// smallTable.ts
+import { Table } from "./table";
+
+export class SmallTable extends Table {
+  constructor() {
+    super();
+    this.name = 'Small Table';
+    this.height = 50;
+    this.width = 50;
+    this.depth = 50;
+  }
+}
+
+// mediumTable.ts
+import { Table } from "./table";
+
+export class MediumTable extends Table {
+  constructor() {
+    super();
+    this.name = 'Medium Table';
+    this.height = 80;
+    this.width = 80;
+    this.depth = 80;
+  }
+}
+
+// bigTable.ts
+import { Table } from "./table";
+
+export class BigTable extends Table {
+  constructor() {
+    super();
+    this.name = 'Big Table';
+    this.height = 100;
+    this.width = 100;
+    this.depth = 100;
+  }
+}
+
+// tableFactory.ts
+import { BigTable } from "./bigTable";
+import { MediumTable } from "./mediumTable";
+import { SmallTable } from "./smallTable";
+import { ITable, Table } from "./table";
+
+enum TablesType {
+  SmallTable = 'SmallTable',
+  MediumTable = 'MediumTable',
+  BigTable = 'BigTable'
+}
+
+export class TableFactory {
+  static getTable(tableType: string): ITable {
+    try {
+      if (tableType === TablesType.SmallTable) {
+        return new SmallTable();
+      } else if (tableType === TablesType.MediumTable) {
+        return new MediumTable();
+      } else if(tableType === TablesType.BigTable) {
+        return new BigTable();
+      } else {
+        throw new Error('Class not found');
+      }
+    } catch(e) {
+      console.log(e);
+    }
+    return new Table();
+  }
+}
+
+// fornitureFactory.ts
+import { IChair } from "./chair";
+import { ChairFactory } from "./chairFactory";
+import { ITable } from "./table";
+import { TableFactory } from "./TableFactory";
+
+export interface IForniture extends IChair, ITable {};
+
+const chairs = ['SmallChair', 'MediumChair', 'BigChair'];
+const tables = ['SmallTable', 'MediumTable', 'BigTable'];
+
+export class FornitureFactory {
+  static getFurniture(forniture: string): IForniture | undefined {
+    try {
+      if (chairs.indexOf(forniture) > -1) {
+        return ChairFactory.getChair(forniture);
+      }
+      if (tables.indexOf(forniture) > -1) {
+        return TableFactory.getTable(forniture);
+      }
+      throw new Error('Factory not Found');
+    } catch(e) {
+      console.log(e)
+    }
+  }
+}
+
+// client.ts
+import { FornitureFactory } from "./furnitureFactory";
+
+let FORNITURE = FornitureFactory.getFurniture('SmallChair');
+console.log(FORNITURE?.name);
+console.log(FORNITURE?.getDimension());
+
+FORNITURE = FornitureFactory.getFurniture('BigTable');
+console.log(FORNITURE?.name);
+console.log(FORNITURE?.getDimension());
+```
