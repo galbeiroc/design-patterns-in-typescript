@@ -1,10 +1,10 @@
-import HouseBoat from "./houseBoat";
-import HouseCastle from "./houseCastle";
-import HouseIgloo from "./houseIgloo";
+import DirectorBoat from "./directorBoat";
+import DirectorCastle from "./directorCastle";
+import DirectorIgloo from "./directorIgloo";
 
-const IGLOO = HouseIgloo.construct();
-const CASTLE = HouseCastle.contruct();
-const BOAT = HouseBoat.contruct();
+const IGLOO = DirectorIgloo.construct();
+const CASTLE = DirectorCastle.contruct();
+const BOAT = DirectorBoat.contruct();
 
 console.log(IGLOO.construction());
 console.log(CASTLE.construction());

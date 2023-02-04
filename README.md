@@ -1145,11 +1145,11 @@ export default class HouseBuilder implements IHouseBuilder {
   }
 }
 
-// houseBoat.ts
+// directorBoat.ts
 import House from "./house";
 import HouseBuilder from "./houseBuilder";
 
-export default class HouseBoat {
+export default class DirectorBoat {
   static contruct(): House {
     return new HouseBuilder()
       .setBuildingType('House Boat')
@@ -1160,11 +1160,11 @@ export default class HouseBoat {
   }
 }
 
-// houseCastle.ts
+// directorCastle.ts
 import House from "./house";
 import HouseBuilder from "./houseBuilder";
 
-export default class HouseCastle {
+export default class DirectorCastle {
   static contruct(): House {
     return new HouseBuilder()
       .setBuildingType('Castle')
@@ -1175,11 +1175,11 @@ export default class HouseCastle {
   }
 }
 
-// houseIgloo.ts
+// directorIgloo.ts
 import House from "./house";
 import HouseBuilder from "./houseBuilder";
 
-export default class HouseIgloo {
+export default class DirectorIgloo {
   static construct(): House {
     return new HouseBuilder()
       .setBuildingType('Igloo')
@@ -1190,13 +1190,13 @@ export default class HouseIgloo {
 }
 
 // client.ts
-import HouseBoat from "./houseBoat";
-import HouseCastle from "./houseCastle";
-import HouseIgloo from "./houseIgloo";
+import DirectorBoat from "./directorBoat";
+import DirectorCastle from "./directorCastle";
+import DirectorIgloo from "./directorIgloo";
 
-const IGLOO = HouseIgloo.construct();
-const CASTLE = HouseCastle.contruct();
-const BOAT = HouseBoat.contruct();
+const IGLOO = DirectorIgloo.construct();
+const CASTLE = DirectorCastle.contruct();
+const BOAT = DirectorBoat.contruct();
 
 console.log(IGLOO.construction()); // This is a Ice Igloo with 1 door(s) and 0 window(s).
 console.log(CASTLE.construction()); // This is a Sandstone Castle with 10 door(s) and 14 window(s).
