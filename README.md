@@ -1089,4 +1089,116 @@ The builder can construct complex objects in any order and include/exclude which
 <img src='./assets/builder.png' alt="Builder UML Diagram" />
 
 ```ts
+// house.ts
+export default class House {
+  doors: number = 0;
+  windows: number = 0;
+  wallMaterial: string = '';
+  buildingType: string = '';
+
+  construction(){
+    return `This is a ${this.wallMaterial} ${this.buildingType} with ${this.doors} door(s) and ${this.windows} window(s).`;
+  }
+}
+
+// houseBuilder.ts
+import House from "./house";
+
+interface IHouseBuilder {
+  house: House;
+  setBuildingType(buildingType: string): this;
+  setWallMaterial(wallMaterial: string): this;
+  setNumberDoors(doors: number): this;
+  setNumberWindows(windows: number): this;
+  getResult(): House
+}
+
+export default class HouseBuilder implements IHouseBuilder {
+  house: House;
+
+  constructor() {
+    this.house = new House();
+  }
+
+  setBuildingType(buildingType: string): this {
+    this.house.buildingType = buildingType;
+    return this;
+  }
+
+  setNumberDoors(doors: number): this {
+    this.house.doors = doors;
+    return this;
+  }
+
+  setWallMaterial(wallMaterial: string): this {
+    this.house.wallMaterial = wallMaterial;
+    return this;
+  }
+
+  setNumberWindows(windows: number): this {
+    this.house.windows = windows;
+    return this;
+  }
+
+  getResult(): House {
+    return this.house
+  }
+}
+
+// houseBoat.ts
+import House from "./house";
+import HouseBuilder from "./houseBuilder";
+
+export default class HouseBoat {
+  static contruct(): House {
+    return new HouseBuilder()
+      .setBuildingType('House Boat')
+      .setWallMaterial('Wood')
+      .setNumberDoors(6)
+      .setNumberWindows(4)
+      .getResult();
+  }
+}
+
+// houseCastle.ts
+import House from "./house";
+import HouseBuilder from "./houseBuilder";
+
+export default class HouseCastle {
+  static contruct(): House {
+    return new HouseBuilder()
+      .setBuildingType('Castle')
+      .setWallMaterial('Sandstone')
+      .setNumberDoors(10)
+      .setNumberWindows(14)
+      .getResult();
+  }
+}
+
+// houseIgloo.ts
+import House from "./house";
+import HouseBuilder from "./houseBuilder";
+
+export default class HouseIgloo {
+  static construct(): House {
+    return new HouseBuilder()
+      .setBuildingType('Igloo')
+      .setWallMaterial('Ice')
+      .setNumberDoors(1)
+      .getResult()
+  }
+}
+
+// client.ts
+import HouseBoat from "./houseBoat";
+import HouseCastle from "./houseCastle";
+import HouseIgloo from "./houseIgloo";
+
+const IGLOO = HouseIgloo.construct();
+const CASTLE = HouseCastle.contruct();
+const BOAT = HouseBoat.contruct();
+
+console.log(IGLOO.construction()); // This is a Ice Igloo with 1 door(s) and 0 window(s).
+console.log(CASTLE.construction()); // This is a Sandstone Castle with 10 door(s) and 14 window(s).
+console.log(BOAT.construction()); // This is a Wood House Boat with 6 door(s) and 4 window(s).
 ```
