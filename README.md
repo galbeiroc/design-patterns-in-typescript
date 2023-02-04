@@ -1063,3 +1063,147 @@ FORNITURE = FornitureFactory.getFurniture('BigTable');
 console.log(FORNITURE?.name);
 console.log(FORNITURE?.getDimension());
 ```
+
+### Builder Design Pattern
+The Builder Pattern is a creational pattern whose intent is to separate the construction of a complex object from its representation so that you can use the same construction process to create different representations.
+
+The Builder Pattern tries to solve,
+
+* How can a class create different representations of a complex object?
+* How can a class that includes creating a complex object be simplified?
+
+The Builder and Factory patterns are very similar in the fact they both instantiate new objects at runtime. The difference is when the process of creating the object is more complex, so rather than the Factory returning a new instance of `ObjectA`, it calls the builders' director constructor method `ObjectA.construct()` that goes through a more complex construction process involving several steps. Both return an Object/Product.
+
+#### Terminology
+***Product***: The Product being built.
+***Builder Interface***: The Interface that the Concrete builder should implement.
+***Builder***: Provides methods to build and retrieve the concrete product. Implements the Builder Interface.
+***Director***: Has a construct() method that when called creates a customized product using the methods of the Builder.
+
+#### Builder Use Case
+Using the Builder Pattern in the context of a House Builder.
+There are multiple directors that can create their own complex objects.
+Note that in the `IglooDirector` class, not all the methods of the HouseBuilder were called.
+The builder can construct complex objects in any order and include/exclude whichever parts it likes.
+
+<img src='./assets/builder.png' alt="Builder UML Diagram" />
+
+```ts
+// house.ts
+export default class House {
+  doors: number = 0;
+  windows: number = 0;
+  wallMaterial: string = '';
+  buildingType: string = '';
+
+  construction(){
+    return `This is a ${this.wallMaterial} ${this.buildingType} with ${this.doors} door(s) and ${this.windows} window(s).`;
+  }
+}
+
+// houseBuilder.ts
+import House from "./house";
+
+interface IHouseBuilder {
+  house: House;
+  setBuildingType(buildingType: string): this;
+  setWallMaterial(wallMaterial: string): this;
+  setNumberDoors(doors: number): this;
+  setNumberWindows(windows: number): this;
+  getResult(): House
+}
+
+export default class HouseBuilder implements IHouseBuilder {
+  house: House;
+
+  constructor() {
+    this.house = new House();
+  }
+
+  setBuildingType(buildingType: string): this {
+    this.house.buildingType = buildingType;
+    return this;
+  }
+
+  setNumberDoors(doors: number): this {
+    this.house.doors = doors;
+    return this;
+  }
+
+  setWallMaterial(wallMaterial: string): this {
+    this.house.wallMaterial = wallMaterial;
+    return this;
+  }
+
+  setNumberWindows(windows: number): this {
+    this.house.windows = windows;
+    return this;
+  }
+
+  getResult(): House {
+    return this.house
+  }
+}
+
+// houseBoat.ts
+import House from "./house";
+import HouseBuilder from "./houseBuilder";
+
+export default class HouseBoat {
+  static contruct(): House {
+    return new HouseBuilder()
+      .setBuildingType('House Boat')
+      .setWallMaterial('Wood')
+      .setNumberDoors(6)
+      .setNumberWindows(4)
+      .getResult();
+  }
+}
+
+// houseCastle.ts
+import House from "./house";
+import HouseBuilder from "./houseBuilder";
+
+export default class HouseCastle {
+  static contruct(): House {
+    return new HouseBuilder()
+      .setBuildingType('Castle')
+      .setWallMaterial('Sandstone')
+      .setNumberDoors(10)
+      .setNumberWindows(14)
+      .getResult();
+  }
+}
+
+// houseIgloo.ts
+import House from "./house";
+import HouseBuilder from "./houseBuilder";
+
+export default class HouseIgloo {
+  static construct(): House {
+    return new HouseBuilder()
+      .setBuildingType('Igloo')
+      .setWallMaterial('Ice')
+      .setNumberDoors(1)
+      .getResult()
+  }
+}
+
+// client.ts
+import HouseBoat from "./houseBoat";
+import HouseCastle from "./houseCastle";
+import HouseIgloo from "./houseIgloo";
+
+const IGLOO = HouseIgloo.construct();
+const CASTLE = HouseCastle.contruct();
+const BOAT = HouseBoat.contruct();
+
+console.log(IGLOO.construction()); // This is a Ice Igloo with 1 door(s) and 0 window(s).
+console.log(CASTLE.construction()); // This is a Sandstone Castle with 10 door(s) and 14 window(s).
+console.log(BOAT.construction()); // This is a Wood House Boat with 6 door(s) and 4 window(s).
+```
+#### Summary
+The Builder pattern is a creational pattern that is used to create more complex objects than you'd expect from a factory.
+The Builder pattern should be able to construct complex objects in any order and include/exclude whichever available components it likes.
+For different combinations of products than can be returned from a Builder, use a specific Director to create the bespoke combination.
+You can use an `Abstract Factory` to add an abstraction between the client and Director.
