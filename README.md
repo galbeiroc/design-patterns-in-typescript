@@ -1207,3 +1207,16 @@ The Builder pattern is a creational pattern that is used to create more complex 
 The Builder pattern should be able to construct complex objects in any order and include/exclude whichever available components it likes.
 For different combinations of products than can be returned from a Builder, use a specific Director to create the bespoke combination.
 You can use an `Abstract Factory` to add an abstraction between the client and Director.
+
+### Prototype Design Pattern
+The Prototype design pattern is good for when creating new objects requires more resources than you want to use or have available. You can save resources by just creating a copy of any existing object that is already in memory.
+In the Prototype patterns interface, you create a clone method that should be implemented by all classes that use the interface. How the clone method is implemented in the concrete class is up to you. You will need to decide whether a shallow or deep copy is required.
+
+* A shallow copy, copies and creates new references one level deep,
+* A deep copy, copies and creates new references for all levels.
+
+
+#### Terminology
+***Prototype Interface***: The interface that describes the clone() method.
+***Prototype***: The Object/Product that implements the Prototype interface.
+***Client***: The client application that uses and creates the ProtoType.
