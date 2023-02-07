@@ -1220,3 +1220,14 @@ In the Prototype patterns interface, you create a clone method that should be im
 ***Prototype Interface***: The interface that describes the clone() method.
 ***Prototype***: The Object/Product that implements the Prototype interface.
 ***Client***: The client application that uses and creates the ProtoType.
+
+#### Prototype Use Case
+In this example, an object called document is cloned using shallow and deep methods.
+
+I clone the documents instance properties and methods.
+
+The object contains an array of two arrays. Three copies are created, and each time some part of the array is changed on the clone, and depending on the method used, it can affect the original object.
+
+When cloning an object, it is good to understand the deep versus shallow concept of copying and whether you also want the clone to contain the classes methods.
+
+<img src='./assets/prototype.png' alt="Prototype UML Diagram" />
