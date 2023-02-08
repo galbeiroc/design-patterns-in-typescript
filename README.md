@@ -1231,3 +1231,79 @@ The object contains an array of two arrays. Three copies are created, and each t
 When cloning an object, it is good to understand the deep versus shallow concept of copying and whether you also want the clone to contain the classes methods.
 
 <img src='./assets/prototype.png' alt="Prototype UML Diagram" />
+
+#### Prototype Use Case
+In this example, an object called document is cloned using shallow and deep methods.
+I clone the documents instance properties and methods.
+The object contains an array of two arrays. Three copies are created, and each time some part of the array is changed on the clone, and depending on the method used, it can affect the original object.
+When cloning an object, it is good to understand the deep versus shallow concept of copying and whether you also want the clone to contain the classes methods.
+
+```ts
+// iprototype.ts
+// Prototype concept sample code
+import Document from "./document";
+
+export default interface IPrototype {
+  clone(mode: number): Document;
+}
+
+// document.ts
+import ProtoType from './iPrototype';
+
+export default class Document implements ProtoType {
+  name: string;
+  array: [number[], number[]];
+
+  constructor(name: string, array:[number[], number[]]) {
+    this.name = name;
+    this.array = array;
+  }
+
+  clone(mode: number): Document {
+    // This clone method uses different copy techniques
+    let array;
+    if(mode === 2) {
+      // results in a deep copy of the Document
+      array = JSON.parse(JSON.stringify(this.array));
+    } else {
+      // default, results in a shallow copy of the Document
+      array = Object.assign([], this.array);
+    }
+    return new Document(this.name, array);
+  }
+}
+
+// client.ts
+import Document from "./document";
+
+// Creating a document containing an array of two arrays
+const ORIGINAL_DOCUMENT = new Document('Original', [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8]
+]);
+console.log(ORIGINAL_DOCUMENT);
+
+const DOCUMENT_COPY_1 = ORIGINAL_DOCUMENT.clone(1); // shallow copy
+DOCUMENT_COPY_1.name = 'Copy 1';
+// This also modified ORIGINAL_DOCUMENT because of the shallow copy
+// when using mode 1
+DOCUMENT_COPY_1.array[1][1] = 200;
+console.log(DOCUMENT_COPY_1);
+console.log(ORIGINAL_DOCUMENT);
+
+const DOCUMENT_COPY_2 = ORIGINAL_DOCUMENT.clone(1) // shallow copy
+DOCUMENT_COPY_2.name = 'Copy 2'
+// This does NOT modify ORIGINAL_DOCUMENT because it changes the
+// complete array[1] reference that was shallow copied when using mode 1
+DOCUMENT_COPY_2.array[1] = [9, 10, 11, 12];
+console.log(DOCUMENT_COPY_2);
+console.log(ORIGINAL_DOCUMENT);
+
+const DOCUMENT_COPY_3 = ORIGINAL_DOCUMENT.clone(2); // deep copy
+DOCUMENT_COPY_3.name = 'Copy 3';
+// This does modify ORIGINAL_DOCUMENT because it changes the element of
+// array[1][0] that was deep copied recursively when using mode 2
+DOCUMENT_COPY_3.array[1][0] = 1234;
+console.log(DOCUMENT_COPY_3);
+console.log(ORIGINAL_DOCUMENT);
+```
