@@ -1207,3 +1207,111 @@ The Builder pattern is a creational pattern that is used to create more complex 
 The Builder pattern should be able to construct complex objects in any order and include/exclude whichever available components it likes.
 For different combinations of products than can be returned from a Builder, use a specific Director to create the bespoke combination.
 You can use an `Abstract Factory` to add an abstraction between the client and Director.
+
+### Prototype Design Pattern
+The Prototype design pattern is good for when creating new objects requires more resources than you want to use or have available. You can save resources by just creating a copy of any existing object that is already in memory.
+In the Prototype patterns interface, you create a clone method that should be implemented by all classes that use the interface. How the clone method is implemented in the concrete class is up to you. You will need to decide whether a shallow or deep copy is required.
+
+* A shallow copy, copies and creates new references one level deep,
+* A deep copy, copies and creates new references for all levels.
+
+
+#### Terminology
+***Prototype Interface***: The interface that describes the clone() method.
+***Prototype***: The Object/Product that implements the Prototype interface.
+***Client***: The client application that uses and creates the ProtoType.
+
+#### Prototype Use Case
+In this example, an object called document is cloned using shallow and deep methods.
+
+I clone the documents instance properties and methods.
+
+The object contains an array of two arrays. Three copies are created, and each time some part of the array is changed on the clone, and depending on the method used, it can affect the original object.
+
+When cloning an object, it is good to understand the deep versus shallow concept of copying and whether you also want the clone to contain the classes methods.
+
+<img src='./assets/prototype.png' alt="Prototype UML Diagram" />
+
+#### Prototype Use Case
+In this example, an object called document is cloned using shallow and deep methods.
+I clone the documents instance properties and methods.
+The object contains an array of two arrays. Three copies are created, and each time some part of the array is changed on the clone, and depending on the method used, it can affect the original object.
+When cloning an object, it is good to understand the deep versus shallow concept of copying and whether you also want the clone to contain the classes methods.
+
+```ts
+// iprototype.ts
+// Prototype concept sample code
+import Document from "./document";
+
+export default interface IPrototype {
+  clone(mode: number): Document;
+}
+
+// document.ts
+import ProtoType from './iPrototype';
+
+export default class Document implements ProtoType {
+  name: string;
+  array: [number[], number[]];
+
+  constructor(name: string, array:[number[], number[]]) {
+    this.name = name;
+    this.array = array;
+  }
+
+  clone(mode: number): Document {
+    // This clone method uses different copy techniques
+    let array;
+    if(mode === 2) {
+      // results in a deep copy of the Document
+      array = JSON.parse(JSON.stringify(this.array));
+    } else {
+      // default, results in a shallow copy of the Document
+      array = Object.assign([], this.array);
+    }
+    return new Document(this.name, array);
+  }
+}
+
+// client.ts
+import Document from "./document";
+
+// Creating a document containing an array of two arrays
+const ORIGINAL_DOCUMENT = new Document('Original', [
+  [1, 2, 3, 4],
+  [5, 6, 7, 8]
+]);
+console.log(ORIGINAL_DOCUMENT);
+
+const DOCUMENT_COPY_1 = ORIGINAL_DOCUMENT.clone(1); // shallow copy
+DOCUMENT_COPY_1.name = 'Copy 1';
+// This also modified ORIGINAL_DOCUMENT because of the shallow copy
+// when using mode 1
+DOCUMENT_COPY_1.array[1][1] = 200;
+console.log(DOCUMENT_COPY_1);
+console.log(ORIGINAL_DOCUMENT);
+
+const DOCUMENT_COPY_2 = ORIGINAL_DOCUMENT.clone(1) // shallow copy
+DOCUMENT_COPY_2.name = 'Copy 2'
+// This does NOT modify ORIGINAL_DOCUMENT because it changes the
+// complete array[1] reference that was shallow copied when using mode 1
+DOCUMENT_COPY_2.array[1] = [9, 10, 11, 12];
+console.log(DOCUMENT_COPY_2);
+console.log(ORIGINAL_DOCUMENT);
+
+const DOCUMENT_COPY_3 = ORIGINAL_DOCUMENT.clone(2); // deep copy
+DOCUMENT_COPY_3.name = 'Copy 3';
+// This does modify ORIGINAL_DOCUMENT because it changes the element of
+// array[1][0] that was deep copied recursively when using mode 2
+DOCUMENT_COPY_3.array[1][0] = 1234;
+console.log(DOCUMENT_COPY_3);
+console.log(ORIGINAL_DOCUMENT);
+```
+
+#### Summary
+* Just like the other creational patterns, a Prototype is used to create an object at runtime.
+* A Prototype is created from an object that is already instantiated. Imagine using the existing object as the class template to create a new object, rather than calling a specific class. Note that, the clone method used in the concept video demonstrated didn't copy the class methods to the new object. The clones only contained copies of the instance properties. If you want your new clone to have the same methods of the original class, then use the classes' constructor when returning the clone as I did in the `clone(mode)` method in `document.ts`.
+* The ability to create a Prototype means that you don't need to create many classes for specific combinations of objects. You can create one object, that has a specific configuration, then clone it and alter some factor of it, then create another clone from this altered configuration, and keep continuing to create many objects which are all slightly different from each other.
+* New Prototypes can be created at runtime, without knowing what kind of attributes the prototype may eventually have. E.g., You have a sophisticated object that was randomly created from many factors, and you want to clone it rather than adding all those same factors over and over again until the new object matches the one that could have just been cloned.
+* A prototype is also useful for when you want to create a copy of an object, but creating that copy may be very resource intensive. E.g., you can either create a new houseboat from the builder example, or clone an existing houseboat from one already in memory.
+When designing your clone() method, you should consider which elements will be shallow copied or deep copied.
