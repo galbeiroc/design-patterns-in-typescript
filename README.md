@@ -1315,3 +1315,149 @@ console.log(ORIGINAL_DOCUMENT);
 * New Prototypes can be created at runtime, without knowing what kind of attributes the prototype may eventually have. E.g., You have a sophisticated object that was randomly created from many factors, and you want to clone it rather than adding all those same factors over and over again until the new object matches the one that could have just been cloned.
 * A prototype is also useful for when you want to create a copy of an object, but creating that copy may be very resource intensive. E.g., you can either create a new houseboat from the builder example, or clone an existing houseboat from one already in memory.
 When designing your clone() method, you should consider which elements will be shallow copied or deep copied.
+
+### Singleton Design Pattern
+Sometimes you need an object in an application where there is only one instance.
+You don't want there to be many versions, for example, you have a game with a score, and you want to adjust it. You may have accidentally created several instances of the class holding the score object. Or, you may be opening a database connection, there is no need to create many, when you can use the existing one that is already in memory. You may want a logging component, and you want to ensure all classes use the same instance. So, every class could declare their own logger component, but behind the scenes, they all point to the same memory address.
+By creating a class and following the *Singleton* pattern, you can enforce that even if any number of instances were created, they will still refer to the original class.
+The Singleton can be accessible globally, but it is not a global variable. The Singleton class can be instanced at any time, but after it is first instanced, any new instances will point to the same instance as the first.
+
+<img src='./assets/singleton.png' alt="Singleton UML Diagram" />
+
+#### Singleton Use Case
+In the example, there are three games created. They are all independent instances created from their own class, but they all share the same leaderboard. The leaderboard is a Singleton.
+
+It doesn't matter how the Games where created, or how they reference the leaderboard, it is always a Singleton.
+
+Each game independently adds a winner, and all games can read the altered leaderboard regardless of which game updated it.
+
+```ts
+// igame.ts
+// A Game interface
+export default interface IGame {
+  addWinner(position: number, name: string): void
+}
+
+// leaderboard.ts
+// A Leaderboard Singleton class
+export default class Leaderboard {
+  static instance: Leaderboard;
+  #table: { [id: number]: string } = {}
+
+  constructor() {
+    if(Leaderboard.instance) {
+      return Leaderboard.instance;
+    }
+    Leaderboard.instance = this;
+  }
+
+  public addWinner(position: number, name: string) {
+    this.#table[position] = name;
+  }
+
+  public print() {
+    console.log('-------Leaderboard-------');
+    for (const key in this.#table) {
+      console.log(`|\t${key}\t${this.#table[key]}\t|`);
+    }
+  }
+}
+
+// game1.ts
+// A Game Class that uses the leaderboard Singleton
+import Leaderboard from "./leaderboard";
+import Game from './igame';
+
+export default class Game1 implements Game {
+  leaderBoard: Leaderboard;
+
+  constructor() {
+    this.leaderBoard = new Leaderboard();
+  }
+
+  addWinner(position: number, name: string): void {
+    this.leaderBoard.addWinner(position, name);
+  }
+}
+
+// game2.ts
+// A Game Class that uses the leaderboard Singleton
+import Leaderboard from "./leaderboard";
+import Game from './igame';
+
+export default class Game2 implements Game {
+  leaderBoard: Leaderboard;
+
+  constructor() {
+    this.leaderBoard = new Leaderboard();
+  }
+
+  addWinner(position: number, name: string): void {
+    this.leaderBoard.addWinner(position, name);
+  }
+}
+
+// game3.ts
+// A Game Class that uses the leaderboard Singleton
+import Leaderboard from "./leaderboard";
+import Game from './igame';
+
+export default class Game3 implements Game {
+  leaderBoard: Leaderboard;
+
+  constructor() {
+    this.leaderBoard = new Leaderboard()
+  }
+
+  addWinner(position: number, name: string): void {
+      this.leaderBoard.addWinner(position, name);
+  }
+}
+
+// cleint.ts
+import Game1 from "./game1";
+import Game2 from "./game2";
+import Game3 from "./game3";
+
+// The Client
+// Despite all games instantiating a leaderboard, they all point
+// to the same memory object since the leaderboard is a singleton.
+const GAME1 = new Game1();
+const GAME11 = new Game1();
+GAME1.addWinner(3, 'Cosmo');
+GAME11.addWinner(7, 'Susan');
+
+const GAME2 = new Game2();
+GAME2.addWinner(2, 'Sean');
+
+const GAME3 = new Game3();
+GAME3.addWinner(4, 'Emmy');
+
+GAME1.leaderBoard.print();
+GAME2.leaderBoard.print();
+GAME3.leaderBoard.print();
+/*
+-------Leaderboard-------
+|       2       Sean    |
+|       3       Cosmo   |
+|       4       Emmy    |
+|       7       Susan   |
+-------Leaderboard-------
+|       2       Sean    |
+|       3       Cosmo   |
+|       4       Emmy    |
+|       7       Susan   |
+-------Leaderboard-------
+|       2       Sean    |
+|       3       Cosmo   |
+|       4       Emmy    |
+|       7       Susan   |
+*/
+```
+
+#### Summary
+* To be a Singleton, there must only be one copy of the Singleton, no matter how many times, or in which class it was instantiated.
+* You want the attributes or methods to be globally accessible across your application, so that other classes may be able to use the Singleton.
+* You can use Singletons in other classes, as I did with the leaderboard, and they will all use the same Singleton instance regardless.
+* You want controlled access to a sole instance.
+* A singleton differs from a class containing just static methods and properties in the way that you can make your Singleton implement an interface and/or extend a base class. You also create an instance of a Singleton at runtime using the `new` keyword.
