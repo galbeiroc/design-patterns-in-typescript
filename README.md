@@ -1315,3 +1315,9 @@ console.log(ORIGINAL_DOCUMENT);
 * New Prototypes can be created at runtime, without knowing what kind of attributes the prototype may eventually have. E.g., You have a sophisticated object that was randomly created from many factors, and you want to clone it rather than adding all those same factors over and over again until the new object matches the one that could have just been cloned.
 * A prototype is also useful for when you want to create a copy of an object, but creating that copy may be very resource intensive. E.g., you can either create a new houseboat from the builder example, or clone an existing houseboat from one already in memory.
 When designing your clone() method, you should consider which elements will be shallow copied or deep copied.
+
+### Singleton Design Pattern
+Sometimes you need an object in an application where there is only one instance.
+You don't want there to be many versions, for example, you have a game with a score, and you want to adjust it. You may have accidentally created several instances of the class holding the score object. Or, you may be opening a database connection, there is no need to create many, when you can use the existing one that is already in memory. You may want a logging component, and you want to ensure all classes use the same instance. So, every class could declare their own logger component, but behind the scenes, they all point to the same memory address.
+By creating a class and following the *Singleton* pattern, you can enforce that even if any number of instances were created, they will still refer to the original class.
+The Singleton can be accessible globally, but it is not a global variable. The Singleton class can be instanced at any time, but after it is first instanced, any new instances will point to the same instance as the first.
