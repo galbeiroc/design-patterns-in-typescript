@@ -1477,7 +1477,8 @@ You can nest decorators recursively.
 * Decorator: The class that applies the extra responsibilities to the component being decorated. It also implements the same component interface.
 
 <img src='./assets/decorator.png' alt="Decorator UML Diagram" />
- #### Decorator Use Case
+
+#### Decorator Use Case
 Let's create a custom class called `Value` that will hold a number.
 
 Then add decorators that allow addition (`Add`) and subtraction (`Sub`) to a number (`Value`).
@@ -1583,3 +1584,12 @@ console.log(Sub(100, 101).value) // -1
 console.log(Add(Sub(Add(C, B), A), 100).value); // 106
 console.log(A.value, B.value, C.value); // 1 2 5
 ```
+
+#### Summary
+
+* Use the decorator when you want to add responsibilities to objects dynamically without affecting the inner object.
+* You want the option to later remove the decorator from an object in case you no longer need it.
+* It is an alternative method to creating multiple combinations of subclasses. I.e., Instead of creating a subclass with all combinations of objects A, B, C in any order, and including/excluding objects, you could create 3 objects that can decorate each other in any order you want. E.g., (C(A(C))) or (B(C)) or (A(B(A(C))))
+* The decorator, compared to extending, is more flexible since you can easily add/remove the decorators at runtime. E.g., use in a recursive function.
+* A decorator supports recursive composition. E.g., halve(halve(number))
+* A decorator shouldn't modify the internal objects data or references. This allows the original object to stay intact if the decorator is later removed.
