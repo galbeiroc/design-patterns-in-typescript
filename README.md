@@ -1475,3 +1475,111 @@ You can nest decorators recursively.
 * Component Interface: An interface for objects.
 * Component: The object that may be decorated.
 * Decorator: The class that applies the extra responsibilities to the component being decorated. It also implements the same component interface.
+
+<img src='./assets/decorator.png' alt="Decorator UML Diagram" />
+ #### Decorator Use Case
+Let's create a custom class called `Value` that will hold a number.
+
+Then add decorators that allow addition (`Add`) and subtraction (`Sub`) to a number (`Value`).
+
+The `Add` and `Sub` decorators can accept numbers directly, a custom Value object or other Add and Sub decorators.
+
+`Add`, `Sub` and `Value` all implement the `IValue` interface and can be used recursively.
+
+Note that in this example use case, I have created the `Add`, `Sub` and `Value` as functions that return new instances of classes `_Add`, `_Sub` and `_Value`. This was not necessary, but it means that I can use the `Add`, `Sub` and `Value` in a recursive manner without needing to prefix the `new` keyword in front of each usage all the time.
+
+E.g,
+```js
+console.log(Add(Sub(Add(C, B), A), 100).value);
+```
+Alternatively, I could have named my classes as Add, Sub and Value and then used them recursively directly as
+```js
+console.log(new Add(new Sub(new Add(C, B), A), 100).value);
+```
+
+```ts
+// value.ts
+export interface IValue {
+  value: number;
+}
+
+class _Value implements IValue {
+  value: number;
+
+  constructor(value: number) {
+    this.value = value;
+  }
+}
+
+export default function Value(value: number): IValue {
+  return new _Value(value);
+}
+
+// add.ts
+import { IValue } from './value';
+
+class _Add implements IValue {
+  value: number;
+
+  constructor(val1: IValue | number, val2: IValue | number) {
+    const left = Object.prototype.hasOwnProperty.call(val1, 'value')
+      ? (val1 as IValue).value
+      : (val1 as number);
+    const right = Object.prototype.hasOwnProperty.call(val2, 'value')
+      ? (val2 as IValue).value
+      : (val2 as number);
+
+    this.value = left + right;
+  }
+}
+
+export default function Add(
+  val1: IValue | number,
+  val2: IValue | number
+): IValue {
+  return new _Add(val1, val2);
+}
+
+// sub.ts
+import { IValue } from './value';
+
+class _Sub implements IValue {
+  value: number;
+
+  constructor(val1: IValue | number, val2: IValue | number) {
+    const left = Object.prototype.hasOwnProperty.call(val1, 'value')
+      ? (val1 as IValue).value
+      : (val1 as number);
+    const right = Object.prototype.hasOwnProperty.call(val2, 'value')
+      ? (val2 as IValue).value
+      : (val2 as number)
+    
+    this.value = left - right;
+  }
+}
+
+export default function Sub(
+  val1: IValue | number,
+  val2: IValue | number
+) : IValue {
+  return new _Sub(val1, val2);
+}
+
+// client.ts
+// Decorator Use Case Example Code
+import Add from "./add";
+import Sub from "./sub";
+import Value from "./value";
+
+const A = Value(1);
+const B = Value(2);
+const C = Value(5);
+
+console.log(Add(A, B).value); // 3
+console.log(Add(A, 100).value); // 101
+console.log(Sub(C, A).value); // 4
+console.log(Sub(Add(C, B), A).value) // 6
+console.log(Sub(100, 101).value) // -1
+console.log(Add(Sub(Add(C, B), A), 100).value); // 106
+console.log(A.value, B.value, C.value); // 1 2 5
+```
