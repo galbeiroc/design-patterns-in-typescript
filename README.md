@@ -1461,3 +1461,135 @@ GAME3.leaderBoard.print();
 * You can use Singletons in other classes, as I did with the leaderboard, and they will all use the same Singleton instance regardless.
 * You want controlled access to a sole instance.
 * A singleton differs from a class containing just static methods and properties in the way that you can make your Singleton implement an interface and/or extend a base class. You also create an instance of a Singleton at runtime using the `new` keyword.
+
+## Structural
+### Decorator Design Pattern
+The `decorator pattern` is a structural pattern, that allows you to attach additional responsibilities to an object at runtime.
+
+The decorator pattern is used in both the Object-Oriented and Functional paradigms.
+The decorator pattern adds extensibility without modifying the original object.
+The decorator forwards requests to the enclosed object and can perform extra actions.
+You can nest decorators recursively.
+
+#### Terminology
+* Component Interface: An interface for objects.
+* Component: The object that may be decorated.
+* Decorator: The class that applies the extra responsibilities to the component being decorated. It also implements the same component interface.
+
+<img src='./assets/decorator.png' alt="Decorator UML Diagram" />
+
+#### Decorator Use Case
+Let's create a custom class called `Value` that will hold a number.
+
+Then add decorators that allow addition (`Add`) and subtraction (`Sub`) to a number (`Value`).
+
+The `Add` and `Sub` decorators can accept numbers directly, a custom Value object or other Add and Sub decorators.
+
+`Add`, `Sub` and `Value` all implement the `IValue` interface and can be used recursively.
+
+Note that in this example use case, I have created the `Add`, `Sub` and `Value` as functions that return new instances of classes `_Add`, `_Sub` and `_Value`. This was not necessary, but it means that I can use the `Add`, `Sub` and `Value` in a recursive manner without needing to prefix the `new` keyword in front of each usage all the time.
+
+E.g,
+```js
+console.log(Add(Sub(Add(C, B), A), 100).value);
+```
+Alternatively, I could have named my classes as Add, Sub and Value and then used them recursively directly as
+```js
+console.log(new Add(new Sub(new Add(C, B), A), 100).value);
+```
+
+```ts
+// value.ts
+export interface IValue {
+  value: number;
+}
+
+class _Value implements IValue {
+  value: number;
+
+  constructor(value: number) {
+    this.value = value;
+  }
+}
+
+export default function Value(value: number): IValue {
+  return new _Value(value);
+}
+
+// add.ts
+import { IValue } from './value';
+
+class _Add implements IValue {
+  value: number;
+
+  constructor(val1: IValue | number, val2: IValue | number) {
+    const left = Object.prototype.hasOwnProperty.call(val1, 'value')
+      ? (val1 as IValue).value
+      : (val1 as number);
+    const right = Object.prototype.hasOwnProperty.call(val2, 'value')
+      ? (val2 as IValue).value
+      : (val2 as number);
+
+    this.value = left + right;
+  }
+}
+
+export default function Add(
+  val1: IValue | number,
+  val2: IValue | number
+): IValue {
+  return new _Add(val1, val2);
+}
+
+// sub.ts
+import { IValue } from './value';
+
+class _Sub implements IValue {
+  value: number;
+
+  constructor(val1: IValue | number, val2: IValue | number) {
+    const left = Object.prototype.hasOwnProperty.call(val1, 'value')
+      ? (val1 as IValue).value
+      : (val1 as number);
+    const right = Object.prototype.hasOwnProperty.call(val2, 'value')
+      ? (val2 as IValue).value
+      : (val2 as number)
+    
+    this.value = left - right;
+  }
+}
+
+export default function Sub(
+  val1: IValue | number,
+  val2: IValue | number
+) : IValue {
+  return new _Sub(val1, val2);
+}
+
+// client.ts
+// Decorator Use Case Example Code
+import Add from "./add";
+import Sub from "./sub";
+import Value from "./value";
+
+const A = Value(1);
+const B = Value(2);
+const C = Value(5);
+
+console.log(Add(A, B).value); // 3
+console.log(Add(A, 100).value); // 101
+console.log(Sub(C, A).value); // 4
+console.log(Sub(Add(C, B), A).value) // 6
+console.log(Sub(100, 101).value) // -1
+console.log(Add(Sub(Add(C, B), A), 100).value); // 106
+console.log(A.value, B.value, C.value); // 1 2 5
+```
+
+#### Summary
+
+* Use the decorator when you want to add responsibilities to objects dynamically without affecting the inner object.
+* You want the option to later remove the decorator from an object in case you no longer need it.
+* It is an alternative method to creating multiple combinations of subclasses. I.e., Instead of creating a subclass with all combinations of objects A, B, C in any order, and including/excluding objects, you could create 3 objects that can decorate each other in any order you want. E.g., (C(A(C))) or (B(C)) or (A(B(A(C))))
+* The decorator, compared to extending, is more flexible since you can easily add/remove the decorators at runtime. E.g., use in a recursive function.
+* A decorator supports recursive composition. E.g., halve(halve(number))
+* A decorator shouldn't modify the internal objects data or references. This allows the original object to stay intact if the decorator is later removed.
