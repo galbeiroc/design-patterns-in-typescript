@@ -814,7 +814,8 @@ To begin with, in simple terms, think if it as a Factory that can return Factori
 
 ***Concrete Product***: The object that is finally returned.
 
-#### Abstract Factory Example Use Case
+#### Abstract Factory Example Use Case
+
 An example use case may be that you have a furniture shopfront. You sell many kinds of furniture. You sell chairs and tables. And they are manufactured at different factories using different unrelated processes that are not important for your concern. You only need the factory to deliver.
 
 You can create an extra module called FurnitureFactory, to handle the chair and table factories, thus removing the implementation details from the client.
@@ -1076,8 +1077,11 @@ The Builder and Factory patterns are very similar in the fact they both instanti
 
 #### Terminology
 ***Product***: The Product being built.
+
 ***Builder Interface***: The Interface that the Concrete builder should implement.
+
 ***Builder***: Provides methods to build and retrieve the concrete product. Implements the Builder Interface.
+
 ***Director***: Has a construct() method that when called creates a customized product using the methods of the Builder.
 
 #### Builder Use Case
@@ -1216,9 +1220,12 @@ In the Prototype patterns interface, you create a clone method that should be im
 * A deep copy, copies and creates new references for all levels.
 
 
-#### Terminology
+#### Terminology
+
 ***Prototype Interface***: The interface that describes the clone() method.
+
 ***Prototype***: The Object/Product that implements the Prototype interface.
+
 ***Client***: The client application that uses and creates the ProtoType.
 
 #### Prototype Use Case
@@ -1472,9 +1479,9 @@ The decorator forwards requests to the enclosed object and can perform extra act
 You can nest decorators recursively.
 
 #### Terminology
-* Component Interface: An interface for objects.
-* Component: The object that may be decorated.
-* Decorator: The class that applies the extra responsibilities to the component being decorated. It also implements the same component interface.
+***Component Interface***: An interface for objects.
+***Component***: The object that may be decorated.
+***Decorator***: The class that applies the extra responsibilities to the component being decorated. It also implements the same component interface.
 
 <img src='./assets/decorator.png' alt="Decorator UML Diagram" />
 
@@ -1593,3 +1600,160 @@ console.log(A.value, B.value, C.value); // 1 2 5
 * The decorator, compared to extending, is more flexible since you can easily add/remove the decorators at runtime. E.g., use in a recursive function.
 * A decorator supports recursive composition. E.g., halve(halve(number))
 * A decorator shouldn't modify the internal objects data or references. This allows the original object to stay intact if the decorator is later removed.
+
+### Adapter Design Pattern
+Sometimes classes have been written, and you don't have the option of modifying their interface to suit your needs. This happens if the method you are calling is on a different system across a network, a library that you may import or generally something that is not viable to modify directly for your particular needs.
+
+The ***Adapter*** design pattern solves these problems:
+
+* How can a class be reused that does not have an interface that a client requires?
+* How can classes that have incompatible interfaces work together?
+* How can an alternative interface be provided for a class?
+
+You may have two classes that are similar, but they have different method signatures, so you create an Adapter over top of one of the method signatures so that it is easier to implement and extend in the client.
+
+An adapter is similar to the `Decorator` in the way that it also acts like a wrapper to an object. It is also used at runtime; however, it is not designed to be used recursively.
+
+It is an alternative interface over an existing interface. Furthermore, it can also provide extra functionality that the interface being adapted may not already provide.
+
+The adapter is similar to the `Facade`, but you are modifying the method signature, combining other methods and/or transforming data that is exchanged between the existing interface and the client.
+
+The Adapter is used when you have an existing interface that doesn't directly map to an interface that the client requires. So, then you create the Adapter that has a similar functional role, but with a new compatible interface.
+
+#### Terminology
+***Target***: The domain specific interface or class that needs to be adapted.
+***Adapter***: The concrete adapter class containing the adaption process.
+***Adapter Interface***: The interface that the adapter will need to implement in order to make the target compatible with the client.
+***Client***: The client application that will use the Adapter.
+
+#### Adapter Use Case
+The example client can manufacture a *Cube* using different tools. Each solution is invented by a different company. The client user interface manages the Cube product by indicating the *width*, *height* and *depth*. This is compatible with the company A that produces the Cube tool, but not the company B that produces their own version of the Cube tool that uses a different interface with different parameters.
+
+In this example, the client will re-use the interface for company A's Cube and create a compatible Cube from company B.
+
+An adapter will be needed so that the same method signature can be used by the client without the need to ask company B to modify their Cube tool for our specific domains use case.
+
+My imaginary company needs to use both cube suppliers since there is a large demand for cubes and when one supplier is busy, I can then ask the other supplier.
+
+<img src='./assets/adapter.png' alt="Adapter UML Diagram" />
+
+```ts
+// cubeA.ts
+// A hypotetical Cube tool from company A
+export interface ICubeA {
+  manufacture(width: number, height: number, depth: number): boolean
+}
+
+export default class CubeA implements ICubeA {
+  static lastTime = Date.now();
+
+  manufacture(width: number, height: number, depth: number): boolean {
+    // if nor busy, then manufacture a cube with dimensiones
+    const now = Date.now();
+    if (now > CubeA.lastTime + 1500) {
+      console.log(
+        `Company A built Cube with dimensions ${width}x${height}x${depth}`
+      );
+      CubeA.lastTime = now;
+      return true;
+    }
+
+    return false; // busy
+  }
+}
+
+// cubeB.ts
+// A hypotetical Cube tool from Company B
+export interface ICubeB {
+  create(
+    topLeftFront: [number, number, number],
+    bottomRightBack: [number, number, number]
+  ): boolean;
+}
+
+export default class CubeB implements ICubeB {
+  static lastTime = Date.now();
+
+  create(topLeftFront: [number, number, number], bottomRightBack: [number, number, number]): boolean {
+    // if not busy, then manufacture a cube with coords
+    const now = Date.now();
+    if (now > CubeB.lastTime + 3000) {
+      console.log(
+        `Company B built Cube with coords [${topLeftFront[0]},${topLeftFront[1]},${topLeftFront[2]},${bottomRightBack[0]},${bottomRightBack[1]},${bottomRightBack[2]}]`
+      );
+      CubeB.lastTime = now;
+      return true
+    }
+
+    return false // busy
+  }
+}
+
+// cubeBAdapter.ts
+// Adapter for CubeB that implements ICubeA
+import { ICubeA } from './cubeA';
+import CubeB from './cubeB';
+
+export default class CubeBAdapter implements ICubeA {
+  #cube: CubeB;
+
+  constructor() {
+    this.#cube = new CubeB();
+  }
+
+  manufacture(width: number, height: number, depth: number): boolean {
+    const success = this.#cube.create(
+      [0 - width / 2, 0 - height / 2, 0 - depth / 2],
+      [0 + width / 2, 0 + height / 2, 0 + depth / 2]
+    );
+
+    return success;
+  }
+}
+
+// client.ts
+// Adapter example use case
+import CubeA from "./cubeA";
+import CubeBAdapter from "./cuboBAdapter";
+
+const totalCubes = 5;
+let counter = 0;
+
+const manufactureCube = () => {
+  // produce 5 cubes from which ever supplier can manufacture it first
+  const width = Math.floor(Math.random() * 10) + 1;
+  const height = Math.floor(Math.random() * 10) + 1;
+  const depth = Math.floor(Math.random() * 10) + 1;
+  let cube = new CubeA();
+  let success = cube.manufacture(width, height, depth);
+  if (success) {
+    counter += 1;
+  } else {
+    // try other manufacturer
+    console.log('Company A was busy, so trying company B');
+    cube = new CubeBAdapter();
+    success = cube.manufacture(width, height, depth);
+    if (success) {
+      counter += 1;
+    } else {
+      console.log('Company B was busy, so trying company A');
+    }
+  }
+}
+
+// wait some time between manufacturing
+const interval = setInterval(() => {
+  manufactureCube();
+  if (counter >= totalCubes) {
+    clearInterval(interval);
+    console.log(`${totalCubes} cubes have been manufactured`);
+  }
+}, 1000);
+```
+
+#### Summary
+* Use the Adapter when you want to use an existing class, but its interface does not match what you need.
+* The adapter adapts to the interface of its parent class for those situations when it is not viable to modify the parent class to be domain-specific for your use case.
+* Adapters will most likely provide an alternative interface over an existing object, class or interface, but it can also provide extra functionality that the object being adapted may not already provide.
+* An adapter is similar to a `Decorator` except that it changes the interface to the object, whereas the decorator adds responsibility without changing the interface. This also allows the Decorator to be used recursively.
+* An adapter is similar to the `Bridge` pattern and may look identical after the refactoring has been completed. However, the intent of creating the Adapter is different. The Bridge is a result of refactoring existing interfaces, whereas the Adapter is about adapting over existing interfaces that are not viable to modify due to many existing constraints. E.g., you don't have access to the original code, or it may have dependencies that already use it and modifying it would affect those dependencies negatively.
