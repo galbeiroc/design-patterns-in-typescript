@@ -2084,3 +2084,49 @@ facadeExample();
 * The `Mediator` is similar to the Facade in the way that it abstracts existing classes. The Facade is not intended to modify, load balance or apply any extra logic. A subsystem does not need to consider that existence of the facade, it would still work without it.
 * A Facade is a minimal interface that could also be implemented as a Singleton.
 * A Facade is an optional layer that does not alter the subsystem. The subsystem does not need to know about the Facade, and could even be used by many other facades created for different audiences.
+
+
+
+### Bridge Design Pattern
+The *Bridge pattern* is similar to the `Adapter` except in the intent that you developed it.
+
+The Bridge is an approach to refactor already existing code, whereas the Adapter creates an interface on top of existing code through existing available means without refactoring any existing code or interfaces.
+
+The motivation for converting your code to the Bridge pattern is that it may be tightly coupled. There is logic and abstraction close together that is limiting your choices in how you can extend your solution in the way that you need.
+
+E.g., you may have one Car class, that produces a very nice car.
+
+```ts
+const CAR = new Car()
+> Car has wheels and engine and windows and everything else.
+```
+
+But you would like to delegate the engine dynamically from a separate set of classes or solutions.
+
+```ts
+const ENGINE = new EngineA()
+const CAR = new Car(ENGINE)
+```
+
+The Bridge pattern is a process about separating abstraction and implementation, so this will allow you more ways of using your classes.
+
+A Bridge didn't exist before, but since after the separation of interface and logic, each side can be extended independently of each other.
+
+The Bridge pattern should use composition instead of inheritance. This means that you assign the relationship when the object is created at runtime rather than hard coded in the class definition.
+
+I.e., `CAR = new Car(EngineA)` rather than `class Car extends EngineA`
+
+A Bridge implementation will generally be cleaner than an Adapter solution that was bolted on. Since it involved refactoring existing code, rather than layering on top of legacy or third-party solutions that may not have been intended for your particular use case.
+
+#### Terminology
+***Abstraction Interface***: An interface implemented by the refined abstraction describing the common methods to implement.
+***Refined Abstraction***: A refinement of an idea into another class or two. The classes should implement the Abstraction Interface and assign which concrete implementer.
+***Implementer Interface***: The implementer interface that concrete implementers implement.
+***Concrete Implementer***: The implementation logic that the refined abstraction will use.
+
+#### Source Code
+In the concept demonstration code, imagine that the classes were tightly coupled. The concrete class would print out some text to the console.
+
+After abstracting the class along a common ground, it is now more versatile. The implementation has been separated from the abstraction, and now it can print out the same text in two different ways.
+
+The benefit now is that each refined abstraction and implementer can now be worked on independently without affecting the other implementations.
