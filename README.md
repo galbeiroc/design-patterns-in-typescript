@@ -2119,10 +2119,10 @@ I.e., `CAR = new Car(EngineA)` rather than `class Car extends EngineA`
 A Bridge implementation will generally be cleaner than an Adapter solution that was bolted on. Since it involved refactoring existing code, rather than layering on top of legacy or third-party solutions that may not have been intended for your particular use case.
 
 #### Terminology
-***Abstraction Interface***: An interface implemented by the refined abstraction describing the common methods to implement.
-***Refined Abstraction***: A refinement of an idea into another class or two. The classes should implement the Abstraction Interface and assign which concrete implementer.
-***Implementer Interface***: The implementer interface that concrete implementers implement.
-***Concrete Implementer***: The implementation logic that the refined abstraction will use.
+* ***Abstraction Interface***: An interface implemented by the refined abstraction describing the common methods to implement.
+* ***Refined Abstraction***: A refinement of an idea into another class or two. The classes should implement the Abstraction Interface and assign which concrete implementer.
+* ***Implementer Interface***: The implementer interface that concrete implementers implement.
+* ***Concrete Implementer***: The implementation logic that the refined abstraction will use.
 
 #### Source Code
 In the concept demonstration code, imagine that the classes were tightly coupled. The concrete class would print out some text to the console.
@@ -2130,3 +2130,104 @@ In the concept demonstration code, imagine that the classes were tightly coupled
 After abstracting the class along a common ground, it is now more versatile. The implementation has been separated from the abstraction, and now it can print out the same text in two different ways.
 
 The benefit now is that each refined abstraction and implementer can now be worked on independently without affecting the other implementations.
+
+#### Use Case
+In this example, I draw a square and a circle. Both of these can be categorized as shapes.
+
+The shape is set up as the abstraction interface. The refined abstractions, `Square` and `Circle`, implement the `IShape` interface.
+
+When the Square and Circle objects are created, they are also assigned their appropriate implementers being `SquareImplementer` and `CircleImplementer`.
+
+When each shape's `draw` method is called, the equivalent method within their implementer is called.
+
+The Square and Circle are bridged and each implementer and abstraction can be worked on independently.
+
+<img src='./assets/bridge.png' alt="Bridge UML Diagram" />
+
+```ts
+// ishape.ts
+// The Shape Abstraction Interface
+export default interface IShape {
+  draw(): void;
+}
+
+// IshapeImplementor.ts
+// The Shape Implementor interface
+export default interface IShapeImplementor {
+  drawImplementor(): void;
+}
+
+// square.ts
+// A Square Abstraction
+import IShape from './ishape';
+import  IShapeImplementor from './ishapeImplementer';
+
+export default class Square implements IShape {
+  #implementer: IShapeImplementor;
+
+  constructor(implementer: IShapeImplementor) {
+    this.#implementer = implementer;
+  }
+
+  draw(): void {
+    this.#implementer.drawImplementor();
+  }
+}
+
+// circle.ts
+// A Circle Abstraction
+import IShape from './ishape';
+import IShapeImplementor from './ishapeImplementer';
+
+export default class Circle implements IShape {
+  #implementer: IShapeImplementor;
+
+  constructor(implementer: IShapeImplementor) {
+    this.#implementer = implementer;
+  }
+
+  draw(): void {
+    this.#implementer.drawImplementor();
+  }
+}
+
+// squareImplementor.ts
+import IShapeImplementor from "./ishapeImplementer";
+
+export default class SquareImplementer implements IShapeImplementor {
+  drawImplementor(): void {
+    console.log('********');
+    console.log('*      *');
+    console.log('*      *');
+    console.log('*      *');
+    console.log('********');
+  }
+}
+
+// circleImplementor.ts
+import IShapeImplementor from "./ishapeImplementer";
+
+export default class CircleImplementer implements IShapeImplementor {
+  drawImplementor(): void {
+    console.log('   *****')
+    console.log(' *        *')
+    console.log('*          *')
+    console.log('*          *')
+    console.log(' *        *')
+    console.log('    *****')
+  }
+}
+
+// client.ts
+// Bridge Pattern Concept Sample Case
+import Circle from "./circle";
+import CircleImplementer from "./circleImplementor";
+import Square from "./square";
+import SquareImplementer from "./squareImplementor";
+
+const SQUARE = new Square(new SquareImplementer());
+SQUARE.draw();
+
+const CIRCLE = new Circle(new CircleImplementer());
+CIRCLE.draw();
+```
