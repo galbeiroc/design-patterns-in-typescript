@@ -2124,7 +2124,7 @@ A Bridge implementation will generally be cleaner than an Adapter solution that 
 * ***Implementer Interface***: The implementer interface that concrete implementers implement.
 * ***Concrete Implementer***: The implementation logic that the refined abstraction will use.
 
-#### Source Code
+#### Source Code
 In the concept demonstration code, imagine that the classes were tightly coupled. The concrete class would print out some text to the console.
 
 After abstracting the class along a common ground, it is now more versatile. The implementation has been separated from the abstraction, and now it can print out the same text in two different ways.
@@ -2231,3 +2231,9 @@ SQUARE.draw();
 const CIRCLE = new Circle(new CircleImplementer());
 CIRCLE.draw();
 ```
+
+#### Summary
+* Use when you want to separate a solution where the abstraction and implementation may be tightly coupled, and you want to break it up into smaller conceptual parts.
+* Once you have added the bridge abstraction, you should be able to extend each side of it separately without breaking the other.
+* Also, once the bridge abstraction exists, you can more easily create extra concrete implementations for other similar products that may also happen to be split across similar conceptual lines.
+* The Bridge pattern is similar to the adapter pattern except in the intent that you developed it. The bridge is an approach to refactor already existing code, whereas the adapter adapts to the existing code through its existing interfaces and methods without changing the internals.
