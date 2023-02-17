@@ -3,7 +3,7 @@ interface IAbstraction {
   method(value: string[]): void;
 }
 
-class RefinedAbstractionA implements IAbstraction {
+class RefinedAbstraction implements IAbstraction {
   #implementer: IImplementer;
 
   constructor(implementer: IImplementer) {
@@ -16,17 +16,17 @@ class RefinedAbstractionA implements IAbstraction {
 }
 
 
-class RefinedAbstractionB implements IAbstraction {
-  #implementer: IImplementer;
+// class RefinedAbstractionB implements IAbstraction {
+//   #implementer: IImplementer;
 
-  constructor(implementer: IImplementer) {
-    this.#implementer = implementer;
-  }
+//   constructor(implementer: IImplementer) {
+//     this.#implementer = implementer;
+//   }
 
-  method(value: string[]): void {
-    this.#implementer.method(value);
-  }
-}
+//   method(value: string[]): void {
+//     this.#implementer.method(value);
+//   }
+// }
 
 interface IImplementer {
   method(value: string[]): void;
@@ -47,8 +47,12 @@ class ConcreteImplementerB implements IImplementer {
 // The Client
 const values = ['a', 'b', 'c', 'd'];
 
-const REFINED_ABSTRACTION_A = new RefinedAbstractionA(new ConcreteImplementerA());
-REFINED_ABSTRACTION_A.method(values);
+const REFINED_ABSTRACTION_A = new RefinedAbstraction(new ConcreteImplementerA());
+REFINED_ABSTRACTION_A.method(values); // [ 'a', 'b', 'c', 'd' ]
 
-const REFINED_ABSTRACTION_B = new RefinedAbstractionB(new ConcreteImplementerB());
+const REFINED_ABSTRACTION_B = new RefinedAbstraction(new ConcreteImplementerB());
 REFINED_ABSTRACTION_B.method(values);
+// a
+// b
+// c
+// d
