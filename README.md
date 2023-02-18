@@ -2237,3 +2237,32 @@ CIRCLE.draw();
 * Once you have added the bridge abstraction, you should be able to extend each side of it separately without breaking the other.
 * Also, once the bridge abstraction exists, you can more easily create extra concrete implementations for other similar products that may also happen to be split across similar conceptual lines.
 * The Bridge pattern is similar to the adapter pattern except in the intent that you developed it. The bridge is an approach to refactor already existing code, whereas the adapter adapts to the existing code through its existing interfaces and methods without changing the internals.
+
+### Composite Design Pattern
+The *Composite* design pattern is a structural pattern useful for hierarchical management.
+
+The Composite design pattern,
+
+* Allows you to represent individual entities(leaves) and groups of leaves as the same.
+* Is a structural design pattern that lets you compose objects into a changeable tree structure.
+* Is great if you need the option of swapping hierarchical relationships around.
+* Allows you to add/remove components to the hierarchy.
+* Provides flexibility of structure
+
+Examples of using the Composite Design Pattern can be seen in a file system directory structure where you can swap the hierarchy of files and folders, and also in a drawing program where you can group, ungroup, transform objects and change multiple objects at the same time.
+
+#### Terminology
+* ***Component Interface***: The interface that all leaves and composites should implement.
+* ***Leaf***: A single object that can exist inside or outside a composite.
+* ***Composite***: A collection of leaves and/or other composites.
+
+#### Source Code
+In this concept code, two leaves are created, `LEAF_A` and `LEAF_B`, and two composites are created, `COMPOSITE_1` and `COMPOSITE_2`.
+
+`LEAF_A` is attached to `COMPOSITE_1`.
+
+Then I change my mind and attach `LEAF_A` to `COMPOSITE_2`.
+
+I then attach `COMPOSITE_1` to `COMPOSITE_2`.
+
+`LEAF_B` is not attached to composites.
