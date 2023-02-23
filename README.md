@@ -2237,3 +2237,156 @@ CIRCLE.draw();
 * Once you have added the bridge abstraction, you should be able to extend each side of it separately without breaking the other.
 * Also, once the bridge abstraction exists, you can more easily create extra concrete implementations for other similar products that may also happen to be split across similar conceptual lines.
 * The Bridge pattern is similar to the adapter pattern except in the intent that you developed it. The bridge is an approach to refactor already existing code, whereas the adapter adapts to the existing code through its existing interfaces and methods without changing the internals.
+
+### Composite Design Pattern
+The *Composite* design pattern is a structural pattern useful for hierarchical management.
+
+The Composite design pattern,
+
+* Allows you to represent individual entities(leaves) and groups of leaves as the same.
+* Is a structural design pattern that lets you compose objects into a changeable tree structure.
+* Is great if you need the option of swapping hierarchical relationships around.
+* Allows you to add/remove components to the hierarchy.
+* Provides flexibility of structure
+
+Examples of using the Composite Design Pattern can be seen in a file system directory structure where you can swap the hierarchy of files and folders, and also in a drawing program where you can group, ungroup, transform objects and change multiple objects at the same time.
+
+#### Terminology
+* ***Component Interface***: The interface that all leaves and composites should implement.
+* ***Leaf***: A single object that can exist inside or outside a composite.
+* ***Composite***: A collection of leaves and/or other composites.
+
+#### Source Code
+In this concept code, two leaves are created, `LEAF_A` and `LEAF_B`, and two composites are created, `COMPOSITE_1` and `COMPOSITE_2`.
+
+`LEAF_A` is attached to `COMPOSITE_1`.
+
+Then I change my mind and attach `LEAF_A` to `COMPOSITE_2`.
+
+I then attach `COMPOSITE_1` to `COMPOSITE_2`.
+
+`LEAF_B` is not attached to composites.
+
+#### Use Case
+Demonstration of a simple in memory hierarchical file system.
+A root object is created that is a composite.
+Several files (leaves) are created and added to the root folder.
+More folders (composites) are created, and more files are added, and then the hierarchy is reordered.
+
+<img src='./assets/composite.png' alt="Bridge UML Diagram" />
+
+```ts
+// icomponents.ts
+import Folder from "./folder";
+
+export default interface IComponent {
+  // A Component interface describing the common fields and methods of leaves and composites
+  referenceToParent?: Folder;
+  dir(indent: string): void;
+  // A method each Leaf and composite container should implement
+
+  detach(): void;
+}
+
+// folder.ts
+import IComponent from "./icomponents";
+
+export default class Folder implements IComponent {
+  // A composite can contain leaves and composites
+  referenceToParent?: Folder;
+  name: string;
+  components: IComponent[];
+
+  constructor(name: string) {
+    this.name = name;
+    this.components = [];
+  }
+
+  dir(indent: string): void {
+    console.log(`${indent}<DIR> ${this.name}`);
+
+    this.components.forEach((component) => {
+      component.dir(indent + '..');
+    });
+  }
+
+  attach(component: IComponent): void {
+    // Detach leaf / composite from any current parent reference and then set the parent reference to this composite
+    component.detach();
+    component.referenceToParent = this;
+    this.components.push(component);
+  }
+
+  delete(component: IComponent) {
+    // Removes leaf / composite from this composite this.components
+    const index = this.components.indexOf(component);
+    if (index) {
+      this.components.splice(index, 1);
+    }
+  }
+
+  detach(): void {
+    // Detaching this composite from its parent composite
+    if (this.referenceToParent) {
+      this.referenceToParent.delete(this);
+      this.referenceToParent = undefined;
+    }
+  }
+}
+
+// file.ts
+import IComponent from "./icomponents";
+import Folder from "./folder";
+
+export default class File implements IComponent {
+  // The File class. The files are leaves
+
+  name: string;
+  referenceToParent?: Folder = undefined;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  dir(indent: string): void {
+    console.log(`${indent}<FILE> ${this.name}`);
+  }
+
+  detach(): void {
+    'Detaching this leaf from its parent composite'
+    if (this.referenceToParent) {
+      this.referenceToParent.delete(this);
+    }
+  }
+}
+
+// client.ts
+import File from "./file";
+import Folder from "./folder";
+
+const FILESYSTEM = new Folder('root');
+const FILE_1 = new File('abc.txt');
+const FILE_2 = new File('123.txt');
+FILESYSTEM.attach(FILE_1);
+FILESYSTEM.attach(FILE_2);
+
+const FOLDER_A = new Folder('folder_a');
+FILESYSTEM.attach(FOLDER_A);
+const FILE_3 = new File('xyz.txt');
+FOLDER_A.attach(FILE_3);
+
+const FOLDER_B = new Folder('folder_b');
+const FILE_4 = new File('456.txt');
+FOLDER_B.attach(FILE_4);
+FILESYSTEM.attach(FOLDER_B);
+FILESYSTEM.dir('');
+
+FOLDER_B.attach(FOLDER_A);
+FILESYSTEM.dir('');
+```
+
+#### Summary
+* The Composite design pattern allows you to structure components in a manageable hierarchical order.
+* It provides flexibility of structure since you can add/remove and reorder components.
+* File explorer on Windows is a very good example of the composite design pattern in use.
+* Any system where you need to offer at runtime the ability to group, ungroup, modify multiple objects at the same time, would benefit from the composite design pattern structure. Programs that allow you to draw shapes and graphics will often also use this structure as well.
