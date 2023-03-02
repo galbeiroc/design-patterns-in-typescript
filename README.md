@@ -2427,3 +2427,204 @@ As it is output, it asks the Flyweight factory for the next character. The Flywe
 abracadabra has many re-used characters, so only 5 flyweights needed to be created.
 
 <img src='./assets/flyweight.png' alt="Flyweight UML Diagram" />
+
+#### Use Case
+In this example, I create a dynamic table with 3 rows and 3 columns each. The columns are then filled with some kind of text, and also chosen to be left, right or center aligned.
+
+The letters are the flyweights and only a code indicating the letter is stored. The letters and numbers are shared many times.
+
+The column cells are the contexts, and they pass the extrinsic vales describing the combination of letters, the justification left, right or center, and the width of the table column that is then used for the space padding.
+
+```ts
+// flyweight.ts
+export default class Flyweight {
+  // The concrete Flyweight
+  code: number;
+
+  constructor(code: number) {
+    this.code = code;
+  }
+}
+
+// flyweightFactory.ts
+import Flyweight from "./flyweight";
+
+export default class FlyweightFactory {
+  // Creating the FlyweightFactory as a static class
+  static flyweights: { [id: number]: Flyweight } = {};
+
+  static getFlyweight(code: number): Flyweight {
+    // A static method to get a flyweight based on code
+    if(!(code in FlyweightFactory.flyweights)) {
+      FlyweightFactory.flyweights[code] = new Flyweight(code);
+    }
+
+    return FlyweightFactory.flyweights[code];
+  }
+
+  static getCount(): number {
+    // Returns the number of flyweights in the cache
+    return Object.keys(FlyweightFactory.flyweights).length;
+  }
+}
+
+// columns.ts
+import FlyweightFactory from "./flyweightFactory";
+
+// A Column that is used in a row
+export default class Column {
+  /**
+   * The columns are the contexts.
+   * They will share the Flyweights via the FlyweightsFactory.
+   * `data`, `width` and `justify` are extrinsic values. They are outside of the flyweights
+   */
+  data: string = '';
+  width: number = 10;
+  justify: number = 0;
+
+  getData(): string {
+    // Get the Flyweight value from factory, and apply the extrinsec values
+    const codes = [];
+    for(let i = 0; i < this.data.length; i++) {
+      codes.push(this.data.charCodeAt(i));
+    }
+
+    let ret = '';
+    Array.from(codes).forEach((cod) => {
+      ret += String.fromCharCode(FlyweightFactory.getFlyweight(cod).code);
+    })
+
+    switch(this.justify) {
+      case 1:
+        ret = this.leftAlign(this.width, ret, ' ');
+        break;
+      case 2:
+        ret = this.rightAlign(this.width, ret, ' ');
+        break;
+      default:
+        ret = this.center(this.width, ret, ' ');
+    }
+
+    return ret;
+  }
+
+  center(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.centerAlternate(width, padding + str, padding);
+  }
+
+  centerAlternate(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.center(width, str + padding, padding);
+  }
+
+  leftAlign(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.leftAlign(width, str + padding, padding);
+  }
+
+  rightAlign(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.rightAlign(width, padding + str, padding);
+  }
+}
+
+// row.ts
+// A Row in the Table
+import Column from "./column";
+
+export default class Row {
+  columns: Column[];
+
+  constructor(columnCount: number) {
+    this.columns = [];
+    for(let i = 0; i < columnCount; i++) {
+      this.columns.push(new Column());
+    }
+  }
+
+  getData(): string {
+    // Format the row before returning it to the table
+    let ret = '';
+    this.columns.forEach((col) => {
+      ret = `${ret}${col.getData()} |`;
+    })
+
+    return ret
+  }
+}
+
+// table.ts
+// A formatted Table
+import Row from "./row";
+
+export default class Table {
+  rows: Row[];
+
+  constructor(rowCount: number, columnCount: number) {
+    this.rows = [];
+    for(let i = 0; i < rowCount; i++) {
+      this.rows.push(new Row(columnCount));
+    }
+  }
+
+  draw(): void {
+    // Draws the table formatted in the console
+    let maxRowLength = 0;
+    const rowsTemp: string[] = [];
+    this.rows.forEach((row) => {
+      const rowData = row.getData();
+      rowsTemp.push(`| ${rowData}`);
+      const rowLength = rowData.length + 1;
+      if (maxRowLength < rowLength) {
+        maxRowLength = rowLength
+      }
+    });
+    console.log('-'.repeat(maxRowLength));
+    rowsTemp.forEach((row) => {
+      console.log(row);
+    });
+    console.log('-'.repeat(maxRowLength));
+  }
+}
+
+// client.ts
+// The Flyweight Use Case Example
+import FlyweightFactory from "./flyweightFactory";
+import Table from "./table";
+
+const TABLE = new Table(3, 3);
+TABLE.rows[0].columns[0].data = 'abra';
+TABLE.rows[0].columns[1].data = '112233';
+TABLE.rows[0].columns[2].data = 'cadabra';
+TABLE.rows[1].columns[0].data = 'racadab';
+TABLE.rows[1].columns[1].data = '12345';
+TABLE.rows[1].columns[2].data = '332211';
+TABLE.rows[2].columns[0].data = 'cadabra';
+TABLE.rows[2].columns[1].data = '445566';
+TABLE.rows[2].columns[2].data = 'aa 22 bb';
+
+TABLE.rows[0].columns[0].justify = 1;
+TABLE.rows[1].columns[0].justify = 1;
+TABLE.rows[2].columns[0].justify = 1;
+TABLE.rows[0].columns[2].justify = 2;
+TABLE.rows[1].columns[2].justify = 2;
+TABLE.rows[2].columns[2].justify = 2;
+TABLE.rows[0].columns[1].justify = 15;
+TABLE.rows[1].columns[1].justify = 15;
+TABLE.rows[2].columns[1].justify = 15;
+
+TABLE.draw();
+console.log(`FlyweightFactory has ${FlyweightFactory.getCount()} flyweights`);
+
+// -------------------------------------
+// | abra       |  112233   |   cadabra |
+// | racadab    |   12345   |    332211 |
+// | cadabra    |  445566   |  aa 22 bb |
+// -------------------------------------
+// FlyweightFactory has 12 flyweights
+```
