@@ -15,7 +15,7 @@ export default class Row {
     // Format the row before returning it to the table
     let ret = '';
     this.columns.forEach((col) => {
-      ret = `${ret}${col.getData()}`;
+      ret = `${ret}${col.getData()} |`;
     })
 
     return ret

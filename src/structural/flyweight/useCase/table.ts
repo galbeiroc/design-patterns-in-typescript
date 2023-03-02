@@ -17,7 +17,7 @@ export default class Table {
     const rowsTemp: string[] = [];
     this.rows.forEach((row) => {
       const rowData = row.getData();
-      rowsTemp.push(`|${rowData}`);
+      rowsTemp.push(`| ${rowData}`);
       const rowLength = rowData.length + 1;
       if (maxRowLength < rowLength) {
         maxRowLength = rowLength

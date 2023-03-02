@@ -7,7 +7,7 @@ export default class FlyweightFactory {
   static getFlyweight(code: number): Flyweight {
     // A static method to get a flyweight based on code
     if(!(code in FlyweightFactory.flyweights)) {
-      return FlyweightFactory.flyweights[code];
+      FlyweightFactory.flyweights[code] = new Flyweight(code);
     }
 
     return FlyweightFactory.flyweights[code];

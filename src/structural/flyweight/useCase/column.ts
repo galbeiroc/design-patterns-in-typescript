@@ -40,7 +40,7 @@ export default class Column {
   center(width: number, str: string, padding: string): string {
     return width <= str.length
       ? str
-      : this.centerAlternate(width, str + padding, padding);
+      : this.centerAlternate(width, padding + str, padding);
   }
 
   centerAlternate(width: number, str: string, padding: string): string {
