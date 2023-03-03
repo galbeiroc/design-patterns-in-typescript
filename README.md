@@ -2390,3 +2390,252 @@ FILESYSTEM.dir('');
 * It provides flexibility of structure since you can add/remove and reorder components.
 * File explorer on Windows is a very good example of the composite design pattern in use.
 * Any system where you need to offer at runtime the ability to group, ungroup, modify multiple objects at the same time, would benefit from the composite design pattern structure. Programs that allow you to draw shapes and graphics will often also use this structure as well.
+
+#### Flyweight Design Pattern
+*Fly* in the term *Flyweight* means light/not heavy.
+
+Instead of creating thousands of objects that share common attributes, and result in a situation where a large amount of memory or other resources are used, you can modify your classes to share multiple instances simultaneously by using some kind of reference to the shared object instead.
+
+The best example to describe this is a document containing many words and sentences and made up of many letters. Rather than storing a new object for each individual letter describing its font, position, color, padding and many other potential things. You can store just a lookup ID of a character in a collection of some sort and then dynamically create the object with its proper formatting etc., only as you need to.
+
+This approach saves a lot of memory at the expense of using some extra CPU instead to create the object at presentation time.
+
+The Flyweight pattern, describes how you can share objects rather than creating thousands of almost repeated objects unnecessarily.
+
+A Flyweight acts as an independent object in any number of contexts. A context can be a cell in a table, or a div on an HTML page. A context is using the Flyweight.
+
+You can have many contexts, and when they ask for a Flyweight, they will get an object that may already be shared amongst other contexts, or already within itself somewhere else.
+
+When describing flyweights, it is useful to describe it in terms of intrinsic and extrinsic attributes.
+
+***Intrinsic*** (in or including) are the attributes of a flyweight that are internal and unique from the other flyweights. E.g., a new flyweight for every letter of the alphabet. Each letter is intrinsic to the flyweight.
+
+***Extrinsic*** (outside or external) are the attributes that are used to present the flyweight in terms of the context where it will be used. E.g., many letters in a string can be right aligned with each other. The extrinsic property of each letter is the new positioning of its X and Y on a grid.
+
+#### Terminology
+* ***Flyweight Interface***: An interface that describes the intrinsic properties of the flyweight.
+* ***Concrete Flyweight***: The actual flyweight object that stores the intrinsic attributes and is instantiated when needed by the factory.
+* ***Flyweight Factory***: Creates and manages the flyweights at runtime. It reuses flyweights or creates a new one on demand.
+* ***Context***: Any object(s) within your application that will use the Flyweight Factory.
+* ***Client***: The client application that contains contexts.
+
+#### Source Code
+A context is created using the string `abracadabra`.
+
+As it is output, it asks the Flyweight factory for the next character. The Flyweight factory will either return an existing Flyweight, or create a new one before returning it.
+
+abracadabra has many re-used characters, so only 5 flyweights needed to be created.
+
+<img src='./assets/flyweight.png' alt="Flyweight UML Diagram" />
+
+#### Use Case
+In this example, I create a dynamic table with 3 rows and 3 columns each. The columns are then filled with some kind of text, and also chosen to be left, right or center aligned.
+
+The letters are the flyweights and only a code indicating the letter is stored. The letters and numbers are shared many times.
+
+The column cells are the contexts, and they pass the extrinsic vales describing the combination of letters, the justification left, right or center, and the width of the table column that is then used for the space padding.
+
+```ts
+// flyweight.ts
+export default class Flyweight {
+  // The concrete Flyweight
+  code: number;
+
+  constructor(code: number) {
+    this.code = code;
+  }
+}
+
+// flyweightFactory.ts
+import Flyweight from "./flyweight";
+
+export default class FlyweightFactory {
+  // Creating the FlyweightFactory as a static class
+  static flyweights: { [id: number]: Flyweight } = {};
+
+  static getFlyweight(code: number): Flyweight {
+    // A static method to get a flyweight based on code
+    if(!(code in FlyweightFactory.flyweights)) {
+      FlyweightFactory.flyweights[code] = new Flyweight(code);
+    }
+
+    return FlyweightFactory.flyweights[code];
+  }
+
+  static getCount(): number {
+    // Returns the number of flyweights in the cache
+    return Object.keys(FlyweightFactory.flyweights).length;
+  }
+}
+
+// columns.ts
+import FlyweightFactory from "./flyweightFactory";
+
+// A Column that is used in a row
+export default class Column {
+  /**
+   * The columns are the contexts.
+   * They will share the Flyweights via the FlyweightsFactory.
+   * `data`, `width` and `justify` are extrinsic values. They are outside of the flyweights
+   */
+  data: string = '';
+  width: number = 10;
+  justify: number = 0;
+
+  getData(): string {
+    // Get the Flyweight value from factory, and apply the extrinsec values
+    const codes = [];
+    for(let i = 0; i < this.data.length; i++) {
+      codes.push(this.data.charCodeAt(i));
+    }
+
+    let ret = '';
+    Array.from(codes).forEach((cod) => {
+      ret += String.fromCharCode(FlyweightFactory.getFlyweight(cod).code);
+    })
+
+    switch(this.justify) {
+      case 1:
+        ret = this.leftAlign(this.width, ret, ' ');
+        break;
+      case 2:
+        ret = this.rightAlign(this.width, ret, ' ');
+        break;
+      default:
+        ret = this.center(this.width, ret, ' ');
+    }
+
+    return ret;
+  }
+
+  center(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.centerAlternate(width, padding + str, padding);
+  }
+
+  centerAlternate(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.center(width, str + padding, padding);
+  }
+
+  leftAlign(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.leftAlign(width, str + padding, padding);
+  }
+
+  rightAlign(width: number, str: string, padding: string): string {
+    return width <= str.length
+      ? str
+      : this.rightAlign(width, padding + str, padding);
+  }
+}
+
+// row.ts
+// A Row in the Table
+import Column from "./column";
+
+export default class Row {
+  columns: Column[];
+
+  constructor(columnCount: number) {
+    this.columns = [];
+    for(let i = 0; i < columnCount; i++) {
+      this.columns.push(new Column());
+    }
+  }
+
+  getData(): string {
+    // Format the row before returning it to the table
+    let ret = '';
+    this.columns.forEach((col) => {
+      ret = `${ret}${col.getData()} |`;
+    })
+
+    return ret
+  }
+}
+
+// table.ts
+// A formatted Table
+import Row from "./row";
+
+export default class Table {
+  rows: Row[];
+
+  constructor(rowCount: number, columnCount: number) {
+    this.rows = [];
+    for(let i = 0; i < rowCount; i++) {
+      this.rows.push(new Row(columnCount));
+    }
+  }
+
+  draw(): void {
+    // Draws the table formatted in the console
+    let maxRowLength = 0;
+    const rowsTemp: string[] = [];
+    this.rows.forEach((row) => {
+      const rowData = row.getData();
+      rowsTemp.push(`| ${rowData}`);
+      const rowLength = rowData.length + 1;
+      if (maxRowLength < rowLength) {
+        maxRowLength = rowLength
+      }
+    });
+    console.log('-'.repeat(maxRowLength));
+    rowsTemp.forEach((row) => {
+      console.log(row);
+    });
+    console.log('-'.repeat(maxRowLength));
+  }
+}
+
+// client.ts
+// The Flyweight Use Case Example
+import FlyweightFactory from "./flyweightFactory";
+import Table from "./table";
+
+const TABLE = new Table(3, 3);
+TABLE.rows[0].columns[0].data = 'abra';
+TABLE.rows[0].columns[1].data = '112233';
+TABLE.rows[0].columns[2].data = 'cadabra';
+TABLE.rows[1].columns[0].data = 'racadab';
+TABLE.rows[1].columns[1].data = '12345';
+TABLE.rows[1].columns[2].data = '332211';
+TABLE.rows[2].columns[0].data = 'cadabra';
+TABLE.rows[2].columns[1].data = '445566';
+TABLE.rows[2].columns[2].data = 'aa 22 bb';
+
+TABLE.rows[0].columns[0].justify = 1;
+TABLE.rows[1].columns[0].justify = 1;
+TABLE.rows[2].columns[0].justify = 1;
+TABLE.rows[0].columns[2].justify = 2;
+TABLE.rows[1].columns[2].justify = 2;
+TABLE.rows[2].columns[2].justify = 2;
+TABLE.rows[0].columns[1].justify = 15;
+TABLE.rows[1].columns[1].justify = 15;
+TABLE.rows[2].columns[1].justify = 15;
+
+TABLE.draw();
+console.log(`FlyweightFactory has ${FlyweightFactory.getCount()} flyweights`);
+
+// -------------------------------------
+// | abra       |  112233   |   cadabra |
+// | racadab    |   12345   |    332211 |
+// | cadabra    |  445566   |  aa 22 bb |
+// -------------------------------------
+// FlyweightFactory has 12 flyweights
+```
+
+#### Summary
+
+* Clients should access Flyweight objects only the through a FlyweightFactory object to ensure that they are shared.
+* Intrinsic values are stored internally in the Flyweight.
+* Extrinsic values are passed to the Flyweight and customize it depending on the context.
+* Implementing the flyweight is a balance between storing all objects in memory, versus storing small unique parts in memory, and potentially calculating extrinsic values in the context objects.
+* Use the flyweight to save memory when it is beneficial. The offset is that extra CPU may be required during calculating and passing extrinsic values to the flyweights.
+* The flyweight reduces memory footprint because it shares objects and allows the possibility of dynamically creating extrinsic attributes.
+* The contexts will generally calculate the extrinsic values used by the flyweights, but it is not necessary. Values can be stored or referenced from other objects if necessary.
+* When architecting the flyweight, start with considering which parts of a common object may be able to be split and applied using extrinsic attributes.
