@@ -2391,7 +2391,7 @@ FILESYSTEM.dir('');
 * File explorer on Windows is a very good example of the composite design pattern in use.
 * Any system where you need to offer at runtime the ability to group, ungroup, modify multiple objects at the same time, would benefit from the composite design pattern structure. Programs that allow you to draw shapes and graphics will often also use this structure as well.
 
-#### Flyweight Design Pattern
+### Flyweight Design Pattern
 *Fly* in the term *Flyweight* means light/not heavy.
 
 Instead of creating thousands of objects that share common attributes, and result in a situation where a large amount of memory or other resources are used, you can modify your classes to share multiple instances simultaneously by using some kind of reference to the shared object instead.
@@ -2428,7 +2428,7 @@ abracadabra has many re-used characters, so only 5 flyweights needed to be creat
 
 <img src='./assets/flyweight.png' alt="Flyweight UML Diagram" />
 
-#### Use Case
+#### Use Case
 In this example, I create a dynamic table with 3 rows and 3 columns each. The columns are then filled with some kind of text, and also chosen to be left, right or center aligned.
 
 The letters are the flyweights and only a code indicating the letter is stored. The letters and numbers are shared many times.
@@ -2639,3 +2639,37 @@ console.log(`FlyweightFactory has ${FlyweightFactory.getCount()} flyweights`);
 * The flyweight reduces memory footprint because it shares objects and allows the possibility of dynamically creating extrinsic attributes.
 * The contexts will generally calculate the extrinsic values used by the flyweights, but it is not necessary. Values can be stored or referenced from other objects if necessary.
 * When architecting the flyweight, start with considering which parts of a common object may be able to be split and applied using extrinsic attributes.
+
+### Proxy Design Pattern
+
+The *Proxy* design pattern is a class functioning as an interface to another class or object.
+
+A Proxy could be for anything, such as a network connection, an object in memory, a file, or anything else you need to provide an abstraction between.
+
+Types of proxies,
+
+* Virtual Proxy: An object that can cache parts of the real object, and then complete loading the full object when necessary.
+
+* Remote Proxy: Can relay messages to a real object that exists in a different address space.
+
+* Protection Proxy: Apply an authentication layer in front of the real object.
+
+* Smart Reference: An object whose internal attributes can be overridden or replaced.
+
+Additional functionality can be provided at the proxy abstraction if required. E.g., caching, authorization, validation, lazy initialization, logging.
+
+The proxy should implement the subject interface as much as possible so that the proxy and subject appear identical to the client.
+
+The Proxy Pattern can also be called *Monkey Patching* or *Object Augmentation*.
+
+#### Terminology
+* ***Proxy***: An object with an interface identical to the real subject. Can act as a placeholder until the real subject is loaded or as gatekeeper applying extra functionality.
+* ***Subject Interface***: An interface implemented by both the Proxy and Real Subject.
+* ***Real Subject***: The actual real object that the proxy is representing.
+* ***Client***: The client application that uses and creates the Proxy.
+
+<img src='./assets/proxy_uml.png' alt="Proxy UML Diagram" />
+
+#### Source Code
+
+This concept example will simulate a virtual proxy. The real subject will be called via the proxy. The first time the request is made, the proxy will retrieve the data from the real subject. The second time it is called, it will return the data from the proxies own cache which it created from the first request.
