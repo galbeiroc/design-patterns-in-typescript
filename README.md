@@ -2673,3 +2673,127 @@ The Proxy Pattern can also be called *Monkey Patching* or *Object Augmentation*.
 #### Source Code
 
 This concept example will simulate a virtual proxy. The real subject will be called via the proxy. The first time the request is made, the proxy will retrieve the data from the real subject. The second time it is called, it will return the data from the proxies own cache which it created from the first request.
+
+#### Proxy Use Case
+In this example, I dynamically change the class of an object. So, I am essentially using an object as a proxy to other classes.
+
+Every time the tell_me_the_future() method is called; it will randomly change the object to use a different class.
+
+The object PROTEUS will then use the same static attributes and class methods of the new class instead.
+
+<img src='./assets/proxy_uml_use.png' alt="Proxy Use Case UML Diagram" />
+
+```ts
+// iproteus.ts
+// The Proteus interface
+export default interface IProteus {
+  // A Greek mythological character that can change to many forms
+  tellMeTheFuture(): void;
+  // Proteus will change form rather than tell you the future
+
+  tellMeYourForm(): void;
+  // The form fo Proteus is exclusive like the sea
+}
+
+// lion.ts
+import IProteus from "./iproteus";
+import Leopard from "./leopard";
+import Serpent from "./serpent";
+
+export default class Lion implements IProteus {
+  // Proteus in the form of a Lion
+
+  name = 'Lion';
+
+  tellMeTheFuture(): void {
+    // Proteus will change to something random
+    if (Math.floor(Math.random() * 2)) {
+      Object.assign(this, new Serpent());
+      this.tellMeTheFuture = Serpent.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Serpent.prototype.tellMeYourForm;
+    } else {
+      Object.assign(this, new Leopard());
+      this.tellMeTheFuture = Leopard.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Leopard.prototype.tellMeYourForm;
+    }
+  }
+
+  tellMeYourForm(): void {
+    console.log(`I am the form of ${this.name}`);
+  }
+}
+
+// serpent.ts
+import IProteus from "./iproteus";
+import Leopard from "./leopard";
+import Lion from "./lion";
+
+export default class Serpent implements IProteus {
+  // Proteus in the form of a Serpent
+
+  name = 'Serpent';
+
+  tellMeTheFuture(): void {
+    // Proteus will change to something random
+    if (Math.floor(Math.random() * 2)) {
+      Object.assign(this, new Leopard());
+      this.tellMeTheFuture = Leopard.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Leopard.prototype.tellMeYourForm;
+    } else {
+      Object.assign(this, new Lion());
+      this.tellMeTheFuture = Lion.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Lion.prototype.tellMeYourForm;
+    }
+  }
+
+  tellMeYourForm(): void {
+    console.log(`I am the form of ${this.name}`);
+  }
+}
+
+// leopard.ts
+import IProteus from "./iproteus";
+import Lion from "./lion";
+import Serpent from "./serpent";
+
+export default class Leopard implements IProteus {
+  // Proteus in the form of a Leopard
+
+  name = 'Leopard';
+
+  tellMeTheFuture(): void {
+    // Proteus will change to something random
+    if (Math.floor(Math.random() * 2)) {
+      Object.assign(this, new Lion());
+      this.tellMeTheFuture = Lion.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Lion.prototype.tellMeYourForm;
+    } else {
+      Object.assign(this, new Serpent());
+      this.tellMeTheFuture = Serpent.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Serpent.prototype.tellMeYourForm;
+    }
+  }
+
+  tellMeYourForm(): void {
+    console.log(`I am the form of ${this.name}`);
+  }
+}
+
+// client.ts
+import Lion from './lion';
+
+const PROTEUS = new Lion();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+```
