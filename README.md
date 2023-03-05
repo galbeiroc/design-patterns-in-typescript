@@ -2391,7 +2391,7 @@ FILESYSTEM.dir('');
 * File explorer on Windows is a very good example of the composite design pattern in use.
 * Any system where you need to offer at runtime the ability to group, ungroup, modify multiple objects at the same time, would benefit from the composite design pattern structure. Programs that allow you to draw shapes and graphics will often also use this structure as well.
 
-#### Flyweight Design Pattern
+### Flyweight Design Pattern
 *Fly* in the term *Flyweight* means light/not heavy.
 
 Instead of creating thousands of objects that share common attributes, and result in a situation where a large amount of memory or other resources are used, you can modify your classes to share multiple instances simultaneously by using some kind of reference to the shared object instead.
@@ -2428,7 +2428,7 @@ abracadabra has many re-used characters, so only 5 flyweights needed to be creat
 
 <img src='./assets/flyweight.png' alt="Flyweight UML Diagram" />
 
-#### Use Case
+#### Use Case
 In this example, I create a dynamic table with 3 rows and 3 columns each. The columns are then filled with some kind of text, and also chosen to be left, right or center aligned.
 
 The letters are the flyweights and only a code indicating the letter is stored. The letters and numbers are shared many times.
@@ -2639,3 +2639,172 @@ console.log(`FlyweightFactory has ${FlyweightFactory.getCount()} flyweights`);
 * The flyweight reduces memory footprint because it shares objects and allows the possibility of dynamically creating extrinsic attributes.
 * The contexts will generally calculate the extrinsic values used by the flyweights, but it is not necessary. Values can be stored or referenced from other objects if necessary.
 * When architecting the flyweight, start with considering which parts of a common object may be able to be split and applied using extrinsic attributes.
+
+### Proxy Design Pattern
+
+The *Proxy* design pattern is a class functioning as an interface to another class or object.
+
+A Proxy could be for anything, such as a network connection, an object in memory, a file, or anything else you need to provide an abstraction between.
+
+Types of proxies,
+
+* Virtual Proxy: An object that can cache parts of the real object, and then complete loading the full object when necessary.
+
+* Remote Proxy: Can relay messages to a real object that exists in a different address space.
+
+* Protection Proxy: Apply an authentication layer in front of the real object.
+
+* Smart Reference: An object whose internal attributes can be overridden or replaced.
+
+Additional functionality can be provided at the proxy abstraction if required. E.g., caching, authorization, validation, lazy initialization, logging.
+
+The proxy should implement the subject interface as much as possible so that the proxy and subject appear identical to the client.
+
+The Proxy Pattern can also be called *Monkey Patching* or *Object Augmentation*.
+
+#### Terminology
+* ***Proxy***: An object with an interface identical to the real subject. Can act as a placeholder until the real subject is loaded or as gatekeeper applying extra functionality.
+* ***Subject Interface***: An interface implemented by both the Proxy and Real Subject.
+* ***Real Subject***: The actual real object that the proxy is representing.
+* ***Client***: The client application that uses and creates the Proxy.
+
+<img src='./assets/proxy_uml.png' alt="Proxy UML Diagram" />
+
+#### Source Code
+
+This concept example will simulate a virtual proxy. The real subject will be called via the proxy. The first time the request is made, the proxy will retrieve the data from the real subject. The second time it is called, it will return the data from the proxies own cache which it created from the first request.
+
+#### Proxy Use Case
+In this example, I dynamically change the class of an object. So, I am essentially using an object as a proxy to other classes.
+
+Every time the tell_me_the_future() method is called; it will randomly change the object to use a different class.
+
+The object PROTEUS will then use the same static attributes and class methods of the new class instead.
+
+<img src='./assets/proxy_uml_use.png' alt="Proxy Use Case UML Diagram" />
+
+```ts
+// iproteus.ts
+// The Proteus interface
+export default interface IProteus {
+  // A Greek mythological character that can change to many forms
+  tellMeTheFuture(): void;
+  // Proteus will change form rather than tell you the future
+
+  tellMeYourForm(): void;
+  // The form fo Proteus is exclusive like the sea
+}
+
+// lion.ts
+import IProteus from "./iproteus";
+import Leopard from "./leopard";
+import Serpent from "./serpent";
+
+export default class Lion implements IProteus {
+  // Proteus in the form of a Lion
+
+  name = 'Lion';
+
+  tellMeTheFuture(): void {
+    // Proteus will change to something random
+    if (Math.floor(Math.random() * 2)) {
+      Object.assign(this, new Serpent());
+      this.tellMeTheFuture = Serpent.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Serpent.prototype.tellMeYourForm;
+    } else {
+      Object.assign(this, new Leopard());
+      this.tellMeTheFuture = Leopard.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Leopard.prototype.tellMeYourForm;
+    }
+  }
+
+  tellMeYourForm(): void {
+    console.log(`I am the form of ${this.name}`);
+  }
+}
+
+// serpent.ts
+import IProteus from "./iproteus";
+import Leopard from "./leopard";
+import Lion from "./lion";
+
+export default class Serpent implements IProteus {
+  // Proteus in the form of a Serpent
+
+  name = 'Serpent';
+
+  tellMeTheFuture(): void {
+    // Proteus will change to something random
+    if (Math.floor(Math.random() * 2)) {
+      Object.assign(this, new Leopard());
+      this.tellMeTheFuture = Leopard.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Leopard.prototype.tellMeYourForm;
+    } else {
+      Object.assign(this, new Lion());
+      this.tellMeTheFuture = Lion.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Lion.prototype.tellMeYourForm;
+    }
+  }
+
+  tellMeYourForm(): void {
+    console.log(`I am the form of ${this.name}`);
+  }
+}
+
+// leopard.ts
+import IProteus from "./iproteus";
+import Lion from "./lion";
+import Serpent from "./serpent";
+
+export default class Leopard implements IProteus {
+  // Proteus in the form of a Leopard
+
+  name = 'Leopard';
+
+  tellMeTheFuture(): void {
+    // Proteus will change to something random
+    if (Math.floor(Math.random() * 2)) {
+      Object.assign(this, new Lion());
+      this.tellMeTheFuture = Lion.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Lion.prototype.tellMeYourForm;
+    } else {
+      Object.assign(this, new Serpent());
+      this.tellMeTheFuture = Serpent.prototype.tellMeTheFuture;
+      this.tellMeYourForm = Serpent.prototype.tellMeYourForm;
+    }
+  }
+
+  tellMeYourForm(): void {
+    console.log(`I am the form of ${this.name}`);
+  }
+}
+
+// client.ts
+import Lion from './lion';
+
+const PROTEUS = new Lion();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+PROTEUS.tellMeTheFuture();
+PROTEUS.tellMeYourForm();
+```
+
+#### Summary
+
+* Proxy forwards requests onto the Real Subject when applicable, depending on the kind of proxy.
+* A virtual proxy can cache elements of a real subject before loading the full object into memory.
+* A protection proxy can provide an authentication layer. For example, an NGINX proxy can add Basic Authentication restriction to an HTTP request.
+* A proxy can perform multiple tasks if necessary.
+* A proxy is different from an `Adapter`. The Adapter will try to adapt two existing interfaces together. The Proxy will use the same interface as the subject.
+* It is also very similar to the `Facade`, except you can add extra responsibilities, just like the Decorator. The `Decorator` however can be used recursively.
+* The intent of the Proxy is to provide a stand in for when it is inconvenient to access a real subject directly.
+* The Proxy design pattern may also be called the Surrogate design pattern.
